@@ -1,0 +1,3100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kind Pest Lead Console</title>
+<style>
+  :root{
+    --g:#1f8f55;
+    --g2:#34d399;
+    --g3:#86efac;
+    --bg:#f4f8f5;
+    --panel:#ffffff;
+    --ink:#102217;
+    --muted:#5c7468;
+    --line:#c7d9cf;
+    --line2:#dbe8df;
+    --soft:#f6faf7;
+    --soft2:#fbfdfb;
+    --pink:#f8edf1;
+    --pinkInk:#8d2f62;
+    --gold:#faf4df;
+    --goldInk:#7a5a05;
+    --lav:#f3effb;
+    --lavInk:#5d46a8;
+    --shadow:0 8px 20px rgba(16,34,23,.04);
+    --shadow2:0 10px 24px rgba(16,34,23,.06);
+    --r:20px;
+    --menuW:340px;
+  }
+
+  *{box-sizing:border-box}
+
+  body{
+    margin:0;
+    font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    font-size:14px;
+  }
+
+  .hide{display:none !important}
+
+  .sideMenuBtn{
+    position:fixed;
+    left:12px;
+    top:14px;
+    z-index:90;
+    min-width:118px;
+    height:46px;
+    border-radius:16px;
+    border:1px solid #b9cfbf;
+    background:#ffffff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:var(--shadow);
+    font-weight:950;
+    font-size:13px;
+    letter-spacing:.01em;
+    color:#173424;
+    padding:0 16px;
+  }
+
+  .wrap{
+    max-width:1420px;
+    margin:14px auto;
+    padding:0 12px 28px 64px;
+  }
+
+  .btn{
+    height:38px;
+    border-radius:12px;
+    padding:0 14px;
+    font-weight:850;
+    font-size:13px;
+    cursor:pointer;
+    border:1px solid transparent;
+    white-space:nowrap;
+  }
+  .btn-primary{background:var(--g);color:#fff;box-shadow:0 8px 18px rgba(22,163,74,.20)}
+  .btn-soft{background:#eafff1;color:#0d5a2b;border-color:var(--line)}
+  .btn-dark{background:#0f1d15;color:#fff}
+  .btn-danger{background:#fff1f1;color:#8a1d1d;border-color:#f5caca}
+  .btn:hover,.miniBtn:hover,.toggle:hover,.leadCard:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(16,34,23,.06)}
+  .btn:active{transform:translateY(1px)}
+
+  .topbar{
+    background:rgba(255,255,255,.92);
+    border:1px solid var(--line2);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    padding:12px;
+    display:grid;
+    grid-template-columns:minmax(240px,1.4fr) auto auto auto auto auto;
+    gap:10px;
+    align-items:end;
+    margin-bottom:14px;
+  }
+
+  .fileHeader{
+    display:grid;
+    gap:4px;
+    min-width:0;
+  }
+  .fileHeader .label{
+    font-size:11px;
+    font-weight:900;
+    color:#35614a;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  .fileHeader .fileName{
+    font-size:22px;
+    font-weight:950;
+    line-height:1.1;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .miniField{display:grid;gap:4px}
+  .miniField label{font-size:11px;font-weight:900;color:#254235;white-space:nowrap}
+  .miniField input,.miniField select{
+    height:38px;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+    font-weight:750;
+    font-size:13px;
+    min-width:140px;
+    outline:none;
+  }
+
+  .main{
+    display:grid;
+    grid-template-columns:370px minmax(0,1fr) 470px;
+    gap:14px;
+    align-items:start;
+  }
+
+  .column{
+    display:grid;
+    gap:14px;
+    align-content:start;
+    min-width:0;
+  }
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line2);
+    border-radius:var(--r);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    min-width:0;
+  }
+
+  .head{
+    background:var(--g);
+    color:#fff;
+    padding:10px 14px;
+    font-weight:950;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+
+  .body{padding:12px;min-width:0}
+  .stackInside{display:grid;gap:12px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+  .field{display:grid;gap:4px;min-width:0}
+  .field label{
+    font-size:11px;
+    font-weight:800;
+    color:#29463a;
+    line-height:1.15;
+    white-space:nowrap;
+  }
+  .field input,.field textarea,.field select{
+    width:100%;
+    min-width:0;
+    height:40px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+    padding:8px 10px;
+    font-size:13px;
+    font-weight:700;
+    color:#0e1b12;
+    outline:none;
+  }
+  .field textarea{
+    height:86px;
+    resize:vertical;
+    line-height:1.3;
+    padding-top:10px;
+  }
+  .field input:focus,.field textarea:focus,.field select:focus{
+    border-color:#6bd39a;
+    box-shadow:0 0 0 3px rgba(34,197,94,.15);
+  }
+
+  .readonly{background:var(--soft2);font-weight:900}
+
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  input[type=number]{-moz-appearance:textfield}
+
+  .miniPanel{
+    border:1px solid var(--line2);
+    border-radius:14px;
+    background:var(--soft);
+    padding:10px;
+  }
+  .miniPanel h4{
+    margin:0 0 8px;
+    font-size:12px;
+    font-weight:1000;
+    color:#163527;
+  }
+
+  .chipGrid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+  }
+  .chip{
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:#fff;
+    min-height:38px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    font-weight:900;
+    font-size:12px;
+    cursor:pointer;
+    user-select:none;
+    color:#163527;
+    padding:0 8px;
+    text-align:center;
+  }
+  .chip input{margin:0;width:16px;height:16px;accent-color:var(--g)}
+  .chip.on{background:var(--soft);border-color:#7ddfa8}
+
+  .quoteGrid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .metric{
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:linear-gradient(180deg,#fff,var(--soft2));
+    padding:10px;
+    min-width:0;
+  }
+  .metric .k{font-size:10.5px;font-weight:850;color:#2a4a3b}
+  .metric .v{font-size:18px;font-weight:950;margin:6px 0 2px;line-height:1.05}
+  .metric.big .v{font-size:20px}
+  .metric .sub{font-size:10.5px;color:#2a4a3b;font-weight:750}
+
+  .totalsPanel{
+    background:var(--soft);
+    border:1px solid var(--line2);
+    border-radius:14px;
+    padding:10px;
+    margin-top:12px;
+  }
+  .totalsList{display:grid;gap:8px}
+  .totalsRow{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+    font-weight:900;
+  }
+  .totalsRow .lab{font-size:11px;color:#2a4a3b}
+  .totalsRow .amt{font-size:13px}
+
+  .toggles{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+  }
+  .toggle{
+    height:40px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    background:#fff;
+    font-weight:950;
+    font-size:13px;
+    cursor:pointer;
+    color:#143022;
+  }
+  .toggle.on{background:var(--g);border-color:var(--g);color:#fff}
+
+  details summary{
+    cursor:pointer;
+    font-weight:950;
+    color:#163527;
+    font-size:12px;
+  }
+  table{width:100%;border-collapse:collapse;font-size:11.5px}
+  th,td{border:1px solid var(--line);padding:6px}
+  th{text-align:left;background:#fff}
+  td.right{text-align:right;font-weight:950}
+
+  .adjustGrid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .adjustBox{
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:#fff;
+    padding:12px;
+    min-width:0;
+  }
+  .adjustBox h5{
+    margin:0 0 10px;
+    font-size:12px;
+    font-weight:1000;
+    color:#274536;
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    align-items:center;
+  }
+  .suggestBadge{
+    display:inline-block;
+    background:rgba(34,197,94,.16);
+    border:1px solid rgba(34,197,94,.26);
+    color:#0f5130;
+    font-weight:1000;
+    padding:3px 8px;
+    border-radius:999px;
+    margin-right:6px;
+    line-height:1;
+    font-size:11px;
+    vertical-align:middle;
+    white-space:nowrap;
+  }
+  .suggestNum{font-weight:1000;color:#0b3d23;white-space:nowrap}
+
+  .smallGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+  .statusBox{
+    border:1px dashed var(--line);
+    border-radius:14px;
+    padding:12px;
+    background:#fff;
+    font-size:12px;
+    font-weight:800;
+    color:#244033;
+    line-height:1.5;
+  }
+
+  .collapseBtn{
+    background:#fff;
+    color:#173424;
+    border:1px solid var(--line);
+    border-radius:10px;
+    font-weight:900;
+    padding:8px 10px;
+    cursor:pointer;
+  }
+
+  /* console screen */
+  .consoleWrap{
+    display:grid;
+    gap:14px;
+  }
+
+  .consoleHeader{
+    background:linear-gradient(135deg, rgba(255,255,255,.98) 0%, rgba(240,255,246,.98) 100%);
+    border:1px solid var(--line2);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    padding:12px;
+    display:grid;
+    grid-template-columns:minmax(220px,1.2fr) minmax(220px,1fr) minmax(160px,.8fr) minmax(180px,.8fr) auto;
+    gap:10px;
+    align-items:end;
+  }
+
+  .consoleTitle{
+    font-size:22px;
+    font-weight:950;
+    line-height:1.1;
+  }
+
+  .consoleSub{
+    font-size:12px;
+    font-weight:800;
+    color:var(--muted);
+    margin-top:4px;
+  }
+
+  .consoleBoard{
+    display:grid;
+    grid-template-columns:repeat(7, minmax(240px, 1fr));
+    gap:12px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    align-items:start;
+    padding-bottom:4px;
+  }
+
+  .lane{
+    background:linear-gradient(180deg, rgba(255,255,255,.9) 0%, rgba(245,255,249,.92) 100%);
+    border:1px solid var(--line2);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    min-width:240px;
+    overflow:hidden;
+    display:grid;
+    grid-template-rows:auto 1fr;
+    align-self:start;
+  }
+
+  .laneHead{
+    background:#fff;
+    border-bottom:1px solid var(--line2);
+    padding:10px 12px;
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    align-items:center;
+  }
+
+  .laneTitle{font-weight:950;font-size:13px}
+  .laneCount{
+    min-width:26px;
+    height:26px;
+    border-radius:999px;
+    background:var(--soft);
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:11px;
+    font-weight:900;
+    color:#214132;
+  }
+
+  .laneBody{
+    padding:10px;
+    display:grid;
+    gap:10px;
+    align-content:start;
+    min-height:120px;
+  }
+
+  .leadCard{
+    border:1px solid var(--line);
+    background:linear-gradient(180deg,#fff 0%, #fbfffc 100%);
+    border-radius:14px;
+    padding:12px;
+    cursor:pointer;
+  }
+
+  .leadCard:hover{box-shadow:0 6px 18px rgba(0,0,0,.06)}
+  .leadTop{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    align-items:start;
+  }
+  .leadName{font-weight:950}
+  .leadMeta{
+    font-size:12px;
+    color:#4c6257;
+    line-height:1.45;
+    margin-top:6px;
+  }
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:999px;
+    padding:4px 8px;
+    font-size:11px;
+    font-weight:900;
+    border:1px solid var(--line);
+    background:var(--soft2);
+    color:#224233;
+  }
+
+  .funnelGrid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:12px;
+  }
+
+  .funnelCard{
+    border:1px solid var(--line2);
+    background:#fff;
+    border-radius:16px;
+    padding:14px;
+    box-shadow:var(--shadow);
+    display:grid;
+    gap:10px;
+  }
+
+  .funnelCard h4{
+    margin:0;
+    font-size:14px;
+    font-weight:950;
+  }
+
+  .funnelCard p{
+    margin:0;
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.45;
+  }
+
+  .funnelMini{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+
+  .funnelTag{
+    font-size:11px;
+    font-weight:900;
+    border:1px solid var(--line);
+    background:var(--soft);
+    color:#214132;
+    border-radius:999px;
+    padding:4px 8px;
+  }
+
+  .emptyState{
+    border:1px dashed var(--line);
+    border-radius:14px;
+    padding:14px;
+    background:#fff;
+    color:#567064;
+    font-weight:800;
+  }
+
+  .workspaceBar{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(120px,1fr));
+    gap:10px;
+    padding:10px 12px;
+    margin-bottom:12px;
+    background:rgba(255,255,255,.92);
+    border:1px solid var(--line2);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+  }
+  .pillNote{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    border:1px solid var(--line);
+    background:var(--soft);
+    color:#173424;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:900;
+    padding:6px 10px;
+  }
+
+
+  
+
+  .toolbarRow{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+  }
+
+  .viewToggle,
+  .quickFilters{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+
+  .miniBtn{
+    height:34px;
+    padding:0 12px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:#fff;
+    color:#163527;
+    font-size:12px;
+    font-weight:900;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .miniBtn.on{background:var(--g);border-color:var(--g);color:#fff}
+
+  .deskStats{display:none}
+
+  .chronoList{
+    display:grid;
+    gap:18px;
+  }
+
+  .chronoGroup{
+    display:grid;
+    gap:12px;
+  }
+
+  .chronoGroupHead{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:0 2px 12px;
+    border-bottom:2px solid #d7e4dc;
+  }
+
+  .chronoGroupTitle{
+    font-size:15px;
+    font-weight:950;
+    color:#173424;
+  }
+
+  .chronoGroupCount{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:30px;
+    height:30px;
+    padding:0 10px;
+    border-radius:999px;
+    border:1px solid #c7d8cf;
+    background:#fff;
+    font-size:12px;
+    font-weight:900;
+    color:#214132;
+  }
+
+  .chronoGrid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:12px;
+  }
+
+  .chronoCard{
+    border:1px solid #cfddd4;
+    border-radius:18px;
+    background:#fff;
+    padding:16px;
+    display:grid;
+    gap:10px;
+    cursor:pointer;
+    box-shadow:none;
+  }
+  .chronoCard::after{display:none}
+
+  .chronoName{
+    font-size:22px;
+    font-weight:950;
+    color:#102217;
+    line-height:1.08;
+    letter-spacing:-.02em;
+  }
+
+  .chronoAddress{
+    font-size:16px;
+    font-weight:700;
+    color:#274536;
+    line-height:1.35;
+    min-height:44px;
+  }
+
+  .chronoTouch{
+    padding-top:10px;
+    border-top:1px solid #dfeae4;
+    font-size:13px;
+    font-weight:800;
+    color:#365345;
+    line-height:1.4;
+  }
+
+  .chronoMiniLabel{
+    display:block;
+    margin-bottom:4px;
+    font-size:10.5px;
+    font-weight:900;
+    color:#5d796b;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+
+  .followupPanel{border:1px solid var(--line);border-radius:14px;background:#fff;padding:10px;display:grid;gap:10px}
+  .followupTop{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+  .followupProgress{font-size:12px;font-weight:900;color:#173424}
+  .followupBar{height:10px;border-radius:999px;background:#edf5ef;border:1px solid var(--line);overflow:hidden}
+  .followupFill{height:100%;background:#8fd3a9;border-radius:999px;width:0%}
+  .followupHint{font-size:11px;font-weight:800;color:#5b7267}
+  .followupList{display:grid;gap:8px}
+  .followupRow{display:grid;grid-template-columns:76px 170px minmax(0,1fr);gap:8px;align-items:center}
+  .followupBadge{display:inline-flex;align-items:center;justify-content:center;height:34px;border-radius:10px;border:1px solid var(--line);background:#f8fcf9;font-size:12px;font-weight:900;color:#173424}
+  .followupStamp{height:34px;border-radius:10px;border:1px solid var(--line);background:#f8fcf9;padding:8px 10px;font-size:12px;font-weight:800;color:#173424;display:flex;align-items:center}
+  .followupMini{height:34px}
+  .followupQuick{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+  .followupState{font-size:11px;font-weight:900;color:#5b7267}
+
+
+  .leadCard{
+    border:1px solid #d7e7de;
+    background:#fff;
+    border-radius:14px;
+    padding:12px;
+    cursor:pointer;
+    box-shadow:none;
+    width:100%;
+    max-width:260px;
+  }
+
+  .chronoGrid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,260px));
+    gap:12px;
+    justify-content:start;
+  }
+
+  .detailLauncherGrid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+  }
+  .detailLauncherBtn{
+    width:100%;
+    min-height:74px;
+    border-radius:14px;
+    border:1px solid var(--line);
+    background:#fff;
+    color:#163527;
+    font-weight:950;
+    font-size:13px;
+    cursor:pointer;
+    text-align:left;
+    padding:12px 14px;
+    display:grid;
+    gap:6px;
+    align-content:start;
+  }
+  .detailLauncherBtn strong{font-size:13px;line-height:1.1}
+  .detailLauncherBtn span{font-size:11px;font-weight:800;color:#5b7267;line-height:1.35}
+  .detailLauncherBtn:hover{border-color:#9dcdb0;background:#f8fcf9}
+
+  .drawerOverlay{
+    position:fixed;
+    inset:0;
+    background:rgba(15,29,21,.18);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .18s ease;
+    z-index:120;
+  }
+  .drawerOverlay.show{opacity:1;pointer-events:auto}
+  .detailDrawer{
+    position:fixed;
+    top:0;
+    right:0;
+    width:min(430px, 92vw);
+    height:100vh;
+    background:#fff;
+    border-left:1px solid #d7e7de;
+    box-shadow:-12px 0 30px rgba(0,0,0,.08);
+    transform:translateX(100%);
+    transition:transform .2s ease;
+    z-index:130;
+    display:grid;
+    grid-template-rows:auto auto 1fr;
+  }
+  .detailDrawer.show{transform:translateX(0)}
+  .detailDrawerHead{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:14px 16px;
+    border-bottom:1px solid #e1ece5;
+    background:#f8fcf9;
+  }
+  .detailDrawerTitle{font-size:15px;font-weight:950;color:#163527}
+  .drawerCloseBtn{
+    width:36px;height:36px;border-radius:10px;border:1px solid var(--line);
+    background:#fff;color:#163527;font-size:18px;font-weight:900;cursor:pointer;
+  }
+  .detailTabRow{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid #e1ece5;background:#fff}
+  .detailTabBtn{
+    height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:#fff;
+    color:#163527;font-size:12px;font-weight:900;cursor:pointer;
+  }
+  .detailTabBtn.on{background:var(--g);border-color:var(--g);color:#fff}
+  .detailDrawerScroll{overflow:auto;padding:14px 16px 20px;display:grid;gap:14px;background:#fbfdfb}
+  .drawerPane{display:none;gap:14px}
+  .drawerPane.show{display:grid}
+  .detailDrawerHead{background:#fff}
+  .detailDrawerTitle{font-size:16px}
+  .detailTabRow{position:sticky;top:0;z-index:2}
+  .detailDrawerScroll{background:#fff}
+
+  .tinyPill{display:inline-flex;align-items:center;justify-content:center;min-height:26px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:11px;font-weight:900;color:#214132}
+  .tag{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    border-radius:999px;
+    padding:6px 10px;
+    font-size:11px;
+    font-weight:900;
+    background:var(--soft2);
+    border:1px solid var(--line);
+    color:#234334;
+  }
+
+  .dropHint{
+    border:1px dashed #7ddfa8;
+    background:#f6fff9;
+  }
+
+  .laneBody.dragTarget{
+    background:rgba(34,197,94,.06);
+  }
+
+
+  
+  .modalBackdrop{
+    position:fixed; inset:0; background:rgba(16,34,23,.35); z-index:120;
+    display:flex; align-items:center; justify-content:center; padding:18px;
+  }
+  .modalCard{
+    width:min(560px,100%); background:#fff; border:1px solid var(--line2);
+    border-radius:18px; box-shadow:0 18px 50px rgba(16,34,23,.18); overflow:hidden;
+  }
+  .modalHead{
+    padding:14px 16px; border-bottom:1px solid var(--line2); background:var(--soft2);
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+    font-weight:950;
+  }
+  .modalBody{padding:16px; display:grid; gap:12px}
+  .modalFoot{
+    padding:14px 16px; border-top:1px solid var(--line2); display:flex; gap:10px; justify-content:flex-end;
+    background:#fff;
+  }
+
+  .settingsUsersList{
+    display:grid;
+    gap:10px;
+  }
+  .settingsUserRow{
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:#fff;
+    padding:10px;
+    display:grid;
+    grid-template-columns:minmax(120px,1fr) 110px 100px 100px auto;
+    gap:10px;
+    align-items:end;
+  }
+  .settingsUserRow .field{margin:0}
+
+
+  .loginBackdrop{
+    position:fixed; inset:0; z-index:160; background:rgba(15,29,21,.55);
+    display:flex; align-items:center; justify-content:center; padding:18px;
+  }
+  .loginCard{
+    width:min(420px,100%); background:#fff; border:1px solid var(--line2);
+    border-radius:20px; box-shadow:0 18px 50px rgba(16,34,23,.18); overflow:hidden;
+  }
+  .loginHead{
+    padding:16px; border-bottom:1px solid var(--line2); background:var(--soft2);
+    display:grid; gap:6px;
+  }
+  .loginTitle{font-size:22px; font-weight:950}
+  .loginSub{font-size:12px; color:var(--muted); font-weight:700}
+  .loginBody{padding:16px; display:grid; gap:12px}
+  .loginError{min-height:18px; font-size:13px; font-weight:800; color:#9b1c1c}
+
+
+  .customerTypeRow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .servicePickerGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .serviceChipBtn{min-height:42px;border-radius:12px;border:1px solid var(--line);background:#fff;color:#163527;font-weight:900;font-size:12px;cursor:pointer;padding:10px 12px;text-align:left}
+  .serviceChipBtn.on{background:var(--g);border-color:var(--g);color:#fff}
+  .servicePricingStack{display:grid;gap:12px}
+  .servicePanel{border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px;display:none;gap:10px}
+  .servicePanel.show{display:grid}
+  .servicePanelHead{display:flex;justify-content:space-between;gap:10px;align-items:start;flex-wrap:wrap}
+  .servicePanelHead h5{margin:0;font-size:13px;font-weight:1000;color:#173424}
+  .servicePanelMeta{font-size:11px;font-weight:800;color:#5b7267;line-height:1.35}
+  .serviceSummaryBox{border:1px solid var(--line2);border-radius:14px;background:var(--soft);padding:10px;display:grid;gap:8px}
+  .serviceSummaryRow{display:flex;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:8px 10px;font-size:12px;font-weight:900}
+  .serviceSummaryEmpty{font-size:12px;font-weight:800;color:#5b7267}
+  .serviceHint{font-size:11px;font-weight:800;color:#5b7267}
+  .customerTypeRow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .servicesMenuHeader{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+  .servicesMenuPanel{display:none;gap:10px}
+  .servicesMenuPanel.show{display:grid}
+  .serviceGhostBtn{height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#163527;font-size:12px;font-weight:900;cursor:pointer}
+  .calcModeRow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .serviceSubnote{font-size:11px;font-weight:800;color:#5b7267;margin-top:4px}
+  .suggestLine{font-size:11px;font-weight:900;color:#355545}
+
+@media (max-width:1180px){
+    .main{grid-template-columns:1fr}
+    .topbar{grid-template-columns:1fr 1fr 1fr}
+    .consoleHeader{grid-template-columns:1fr 1fr 1fr}
+    .wrap{padding-left:12px}
+    .sideMenuBtn{left:auto;right:12px}
+  }
+
+  @media (max-width:760px){
+    .topbar{grid-template-columns:1fr}
+    .consoleHeader{grid-template-columns:1fr}
+    .chronoGrid,.row2,.row3,.quoteGrid,.adjustGrid,.smallGrid,.chipGrid,.toggles,.detailLauncherGrid{grid-template-columns:1fr}
+    .followupRow{grid-template-columns:1fr}
+    .miniField input,.miniField select{min-width:0}
+  }
+</style>
+</head>
+<body>
+
+<div id="loginScreen" class="loginBackdrop">
+  <div class="loginCard">
+    <div class="loginHead">
+      <div class="loginTitle">Lead Console</div>
+      <div class="loginSub">Kind Pest Netlify sign in</div>
+    </div>
+    <div class="loginBody">
+      <div class="field">
+        <label>Name</label>
+        <select id="loginName"></select>
+      </div>
+      <div class="field">
+        <label>PIN</label>
+        <input id="loginPin" type="password" inputmode="numeric" placeholder="Enter your PIN">
+      </div>
+      <div id="loginError" class="loginError"></div>
+      <button class="btn btn-primary" id="loginBtn" type="button">Log In</button>
+    </div>
+  </div>
+</div>
+
+<button class="sideMenuBtn" id="menuBtn" type="button" title="Open Lead Desk">Lead Desk</button>
+
+<div class="wrap">
+
+  <!-- FORM SCREEN -->
+  <div id="formScreen">
+    <div class="topbar">
+      <div class="fileHeader">
+        <div class="label">Lead Console</div>
+        <div class="fileName" id="fileNameDisplay">Untitled Lead</div>
+      </div>
+
+      <div class="miniField">
+        <label>Date</label>
+        <input id="topDate" type="date">
+      </div>
+
+      <div class="miniField">
+        <label>Time</label>
+        <input id="topTime" type="time">
+      </div>
+
+      <div class="miniField">
+        <label>Lead Owner</label>
+        <select id="leadOwner"></select>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:end;justify-content:flex-end;">
+        <button class="btn btn-soft" id="logoutBtn" type="button">LOG OUT</button>
+        <button class="btn btn-primary" id="newLeadBtn" type="button">NEW LEAD</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="column">
+        <section class="card">
+          <div class="head">
+            <span>CUSTOMER INFO</span>
+          </div>
+          <div class="body stackInside">
+            <div class="field"><label>CUSTOMER NAME</label><input id="custName" type="text"></div>
+            <div class="row2">
+              <div class="field"><label>LEAD SOURCE</label><input id="custLeadSource" type="text"></div>
+              <div class="field"><label>REFERRED BY</label><input id="custReferredBy" type="text"></div>
+            </div>
+
+            <div class="row2">
+              <div class="field"><label>PHONE</label><input id="custPhone" type="tel"></div>
+              <div class="field"><label>EMAIL</label><input id="custEmail" type="email"></div>
+            </div>
+
+            <div class="field"><label>ADDRESS</label><input id="custAddress" type="text"></div>
+
+            <div class="row3">
+              <div class="field"><label>CITY</label><input id="custCity" type="text"></div>
+              <div class="field"><label>STATE</label><input id="custState" type="text" value="NC"></div>
+              <div class="field"><label>ZIP</label><input id="custZip" type="text"></div>
+            </div>
+
+            <div class="row2">
+              <div class="field"><label>COUNTY</label><input id="custCounty" type="text"></div>
+              <div class="field">
+                <label>STATUS</label>
+                <select id="leadStatus">
+                  <option>Pending</option>
+                  <option>Sold QT</option>
+                  <option>Sold Other</option>
+                  <option>Declined</option>
+                  <option>Misc</option>
+                  <option>Sold Bundle</option>
+                  <option>No Contact Yet</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>PAYMENT TYPE</label>
+              <select id="paymentType">
+                <option value=""></option>
+                <option value="Card">Card</option>
+                <option value="Cash">Cash</option>
+                <option value="Check">Check</option>
+                <option value="Autopay">Autopay</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>CUSTOMER STATUS</label>
+              <div class="customerTypeRow">
+                <button class="toggle on" id="custTypeCustomer" type="button">CUSTOMER</button>
+                <button class="toggle" id="custTypeNonCustomer" type="button">NON-CUSTOMER</button>
+              </div>
+            </div>
+
+            <div class="field"><label>SERVICES NEEDED</label><input id="custServices" type="text" placeholder="Auto-fills from service buttons"></div>
+            <div class="field"><label>NOTES</label><textarea id="custNotes"></textarea></div>
+
+            <div class="miniPanel" style="background:#fff;border-style:dashed;">
+              <h4>CHECKLIST</h4>
+              <div class="chipGrid">
+                <label class="chip"><input type="checkbox" id="chkINT"> INT</label>
+                <label class="chip"><input type="checkbox" id="chkPS"> PS</label>
+                <label class="chip"><input type="checkbox" id="chkWD"> WD</label>
+                <label class="chip"><input type="checkbox" id="chkGR"> GR</label>
+                <label class="chip"><input type="checkbox" id="chkLB"> LB</label>
+                <label class="chip"><input type="checkbox" id="chkRS"> RS</label>
+              </div>
+              <div style="margin-top:10px">
+                <label class="chip" style="width:100%;justify-content:center;">
+                  <input type="checkbox" id="chkAutopay"> AUTOPAY
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="column">
+        <section class="card">
+          <div class="head"><span>QUOTE</span></div>
+          <div class="body">
+            <div class="quoteGrid">
+              <div class="metric">
+                <div class="k">QT RATE</div>
+                <div class="v" id="qtRateDisplay">$0.00</div>
+                <div class="sub">MONTHLY <span id="qtMonthlyDisplay">$0</span></div>
+              </div>
+              <div class="metric">
+                <div class="k">SM RATE</div>
+                <div class="v" id="smRateDisplay">$0.00</div>
+                <div class="sub">MONTHLY <span id="smMonthlyDisplay">$0</span></div>
+              </div>
+              <div class="metric big">
+                <div class="k">TOTAL MONTHLY</div>
+                <div class="v" id="totalMonthlyDisplay">$0 / mo</div>
+                <div class="sub">YIF <span id="totalYifDisplay">$0.00</span></div>
+              </div>
+              <div class="metric big">
+                <div class="k">BUNDLE MONTHLY</div>
+                <div class="v" id="bundleMonthlyDisplay">$0 / mo</div>
+                <div class="sub">YIF <span id="bundleYifDisplay">$0.00</span></div>
+              </div>
+            </div>
+
+            <div class="totalsPanel">
+              <div class="totalsList">
+                <div class="totalsRow"><span class="lab">BUNDLE QT</span><span class="amt" id="bundleQtRow">$0.00</span></div>
+                <div class="totalsRow"><span class="lab">MONTHLY</span><span class="amt" id="plainMonthlyRow">$0 / mo</span></div>
+                <div class="totalsRow"><span class="lab">BUNDLE MONTHLY</span><span class="amt" id="bundleMonthlyRow">$0 / mo</span></div>
+                <div class="totalsRow"><span class="lab">YIF</span><span class="amt" id="plainYifRow">$0.00</span></div>
+                <div class="totalsRow"><span class="lab">BUNDLE YIF</span><span class="amt" id="bundleYifRow">$0.00</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="head"><span>SERVICES</span></div>
+          <div class="body stackInside">
+            <div class="toggles">
+              <button class="toggle on" id="btnQT" type="button">QT</button>
+              <button class="toggle" id="btnSM" type="button">TERMITE</button>
+              <button class="toggle" id="btnYIF" type="button">YIF</button>
+              <button class="toggle" id="btnBundle" type="button">BUNDLE</button>
+            </div>
+            <div class="miniPanel stackInside">
+              <div class="servicesMenuHeader">
+                <div>
+                  <h4>SERVICE MENU</h4>
+                  <div class="serviceHint" id="servicesButtonHint">Open services, select what applies, and the pricing cards appear below.</div>
+                </div>
+                <button class="btn btn-soft" id="openServiceMenuBtn" type="button">SERVICES</button>
+              </div>
+              <div class="servicesMenuPanel" id="servicesMenuPanel">
+                <div class="servicePickerGrid" id="servicePickerGrid">
+                  <button class="serviceChipBtn on" type="button" data-service="pestControl">Pest Control</button>
+                  <button class="serviceChipBtn" type="button" data-service="sentricon">Termite Protection</button>
+                  <button class="serviceChipBtn" type="button" data-service="mosquitoReduction">Mosquito Reduction</button>
+                  <button class="serviceChipBtn" type="button" data-service="mosquitoMonthly">Mosquito Monthly</button>
+                  <button class="serviceChipBtn" type="button" data-service="mosquitoFleaTick">Mosquito + Flea/Tick</button>
+                  <button class="serviceChipBtn" type="button" data-service="bedBug">Bed Bug</button>
+                  <button class="serviceChipBtn" type="button" data-service="germanRoaches">German Roaches</button>
+                  <button class="serviceChipBtn" type="button" data-service="indoorFleas">Indoor Fleas</button>
+                  <button class="serviceChipBtn" type="button" data-service="carpenterBeeTraps">Carpenter Bee Traps</button>
+                  <button class="serviceChipBtn" type="button" data-service="snakeAway">Snake Away</button>
+                  <button class="serviceChipBtn" type="button" data-service="termiteLetter">WDIR</button>
+                  <button class="serviceChipBtn" type="button" data-service="waspRemoval">Wasp Removal</button>
+                  <button class="serviceChipBtn" type="button" data-service="yellowJacket">Yellow Jacket</button>
+                  <button class="serviceChipBtn" type="button" data-service="voles">Voles</button>
+                </div>
+                <div class="serviceHint">Suggested pricing comes from the sheet. If you change a price and then erase it, the suggested default is used again.</div>
+                <div><button class="serviceGhostBtn" id="closeServiceMenuBtn" type="button">Close Services</button></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="column">
+        <section class="card">
+          <div class="head"><span>MEASUREMENTS</span></div>
+          <div class="body">
+            <div class="miniPanel stackInside">
+              <h4>ENTER</h4>
+              <div class="row2">
+                <div class="field"><label>SQFT</label><input id="sqft" type="number" min="0" step="1"></div>
+                <div class="field"><label>LF</label><input id="lf" type="number" min="0" step="1"></div>
+              </div>
+              <div class="row2">
+                <div class="field">
+                  <label>TERMITE STORY TYPE</label>
+                  <select id="sentriconStoryType">
+                    <option value="1">1 Story</option>
+                    <option value="2">2 Story</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>HAS EXISTING STATIONS</label>
+                  <select id="sentriconExisting">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                  </select>
+                </div>
+              </div>
+              <details style="margin-top:10px">
+                <summary>PRICING TIERS</summary>
+                <div style="margin-top:8px;overflow:auto">
+                  <table>
+                    <thead><tr><th>SQFT</th><th class="right">QT</th></tr></thead>
+                    <tbody id="tiersTable"></tbody>
+                  </table>
+                </div>
+              </details>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="head"><span>ADJUST</span></div>
+          <div class="body">
+            <div class="servicePricingStack">
+              <div class="servicePanel show" id="panel-pestControl">
+                <div class="servicePanelHead">
+                  <div>
+                    <h5>Pest Control (QT)</h5>
+                    <div class="servicePanelMeta">Suggested from the QT tiers. You can override it, and clearing the field falls back to the suggestion.</div>
+                  </div>
+                  <span><span class="suggestBadge">SUGGESTED</span><span id="qtSuggestedLabel" class="suggestNum">$0.00</span></span>
+                </div>
+                <div class="smallGrid">
+                  <div class="field"><label>QT QUOTE</label><input id="qtQuote" type="number" step="0.01" placeholder="Uses suggested if blank"></div>
+                  <div class="field"><label>INITIAL</label><input id="qtInit" type="number" step="1" placeholder="Defaults to QT quote"></div>
+                  <div class="field"><label>MONTHLY</label><input id="qtMonthlyRead" class="readonly" type="text" readonly></div>
+                  <div class="field"><label>YIF</label><input id="qtYifRead" class="readonly" type="text" readonly></div>
+                </div>
+              </div>
+
+              <div class="servicePanel" id="panel-sentricon">
+                <div class="servicePanelHead">
+                  <div>
+                    <h5>Termite Protection</h5>
+                    <div class="servicePanelMeta">Default uses linear feet x 1.5 with a $300 minimum. Switch to story + SQFT when you want the chart.</div>
+                    <div class="serviceSubnote" id="termiteSuggestedModeLabel">Mode: Linear ft default</div>
+                  </div>
+                  <span><span class="suggestBadge">SUGGESTED</span><span id="smSuggestedLabel" class="suggestNum">$0.00</span></span>
+                </div>
+                <div class="calcModeRow">
+                  <button class="miniBtn on" id="termiteCalcLfBtn" type="button">Use LF</button>
+                  <button class="miniBtn" id="termiteCalcChartBtn" type="button">Use Stories + SQFT</button>
+                </div>
+                <div class="smallGrid">
+                  <div class="field"><label>MONITORING QUOTE</label><input id="smQuote" type="number" step="0.01" placeholder="Uses suggested if blank"></div>
+                  <div class="field"><label>INSTALL FEE</label><input id="smInstall" type="number" step="1" placeholder="Uses suggested if blank"></div>
+                  <div class="field"><label>MONTHLY</label><input id="smMonthlyRead" class="readonly" type="text" readonly></div>
+                  <div class="field"><label>YEAR 1</label><input id="smYear1Read" class="readonly" type="text" readonly></div>
+                </div>
+              </div>
+
+              <div class="servicePanel" id="panel-bedBug">
+                <div class="servicePanelHead"><div><h5>Bed Bug</h5><div class="servicePanelMeta">Suggested first room and additional room pricing. Clear an override to use the sheet default again.</div></div></div>
+                <div class="smallGrid">
+                  <div class="field"><label>ROOMS</label><input id="bedBugRooms" type="number" min="1" step="1" value="1"></div>
+                  <div class="field"><label>FIRST ROOM PRICE</label><input id="bedBugFirstPrice" type="number" step="0.01" placeholder="Suggested if blank"></div>
+                  <div class="field"><label>ADDITIONAL ROOM PRICE</label><input id="bedBugAddlPrice" type="number" step="0.01" placeholder="Suggested if blank"></div>
+                  <div class="field"><label>TOTAL</label><input id="bedBugTotal" class="readonly" type="text" readonly></div>
+                </div>
+              </div>
+
+              <div class="servicePanel" id="panel-germanRoaches">
+                <div class="servicePanelHead"><div><h5>German Roaches</h5><div class="servicePanelMeta">Suggested initial and follow-up pricing from the sheet.</div></div></div>
+                <div class="smallGrid">
+                  <div class="field"><label>INITIAL</label><input id="germanInitial" type="number" step="0.01" placeholder="Suggested if blank"></div>
+                  <div class="field"><label>FOLLOW-UP</label><input id="germanFollowup" type="number" step="0.01" placeholder="Suggested if blank"></div>
+                </div>
+              </div>
+
+              <div class="servicePanel" id="panel-indoorFleas">
+                <div class="servicePanelHead"><div><h5>Indoor Fleas</h5><div class="servicePanelMeta">Suggested per-room aerosol treatment pricing.</div></div></div>
+                <div class="smallGrid">
+                  <div class="field"><label>ROOMS</label><input id="indoorFleaRooms" type="number" min="1" step="1" value="1"></div>
+                  <div class="field"><label>PRICE PER ROOM</label><input id="indoorFleaPrice" type="number" step="0.01" placeholder="Suggested if blank"></div>
+                  <div class="field"><label>TOTAL</label><input id="indoorFleaTotal" class="readonly" type="text" readonly></div>
+                </div>
+              </div>
+
+              <div class="servicePanel" id="panel-carpenterBeeTraps">
+                <div class="servicePanelHead"><div><h5>Carpenter Bee Traps</h5><div class="servicePanelMeta">Suggested one-time service price per trap.</div></div></div>
+                <div class="smallGrid">
+                  <div class="field"><label>TRAPS</label><input id="carpenterBeeQty" type="number" min="1" step="1" value="1"></div>
+                  <div class="field"><label>PRICE PER TRAP</label><input id="carpenterBeePrice" type="number" step="0.01" placeholder="Suggested if blank"></div>
+                  <div class="field"><label>TOTAL</label><input id="carpenterBeeTotal" class="readonly" type="text" readonly></div>
+                </div>
+              </div>
+
+              <div class="servicePanel" id="panel-mosquitoReduction">
+                <div class="servicePanelHead"><div><h5>Mosquito Reduction</h5><div class="servicePanelMeta">Every 3 weeks.</div></div><span><span class="suggestBadge">SUGGESTED</span><span id="mosquitoReductionSuggested" class="suggestNum">$0.00</span></span></div>
+                <div class="smallGrid">
+                  <div class="field"><label>RECURRING PRICE</label><input id="mosquitoReductionPrice" type="number" step="0.01" placeholder="Suggested if blank"></div>
+                  <div class="field"><label>FREQUENCY</label><input class="readonly" type="text" value="Every 3 weeks" readonly></div>
+                </div>
+              </div>
+
+              <div class="servicePanel" id="panel-mosquitoMonthly">
+                <div class="servicePanelHead"><div><h5>Mosquito Monthly</h5><div class="servicePanelMeta">Every 4 weeks.</div></div><span><span class="suggestBadge">SUGGESTED</span><span id="mosquitoMonthlySuggested" class="suggestNum">$0.00</span></span></div>
+                <div class="smallGrid">
+                  <div class="field"><label>RECURRING PRICE</label><input id="mosquitoMonthlyPrice" type="number" step="0.01" placeholder="Suggested if blank"></div>
+                  <div class="field"><label>FREQUENCY</label><input class="readonly" type="text" value="Every 4 weeks" readonly></div>
+                </div>
+              </div>
+
+              <div class="servicePanel" id="panel-mosquitoFleaTick">
+                <div class="servicePanelHead"><div><h5>Mosquito / Flea / Tick</h5><div class="servicePanelMeta">Every 3 weeks.</div></div><span><span class="suggestBadge">SUGGESTED</span><span id="mosquitoFleaTickSuggested" class="suggestNum">$0.00</span></span></div>
+                <div class="smallGrid">
+                  <div class="field"><label>RECURRING PRICE</label><input id="mosquitoFleaTickPrice" type="number" step="0.01" placeholder="Suggested if blank"></div>
+                  <div class="field"><label>FREQUENCY</label><input class="readonly" type="text" value="Every 3 weeks" readonly></div>
+                </div>
+              </div>
+
+              <div class="servicePanel" id="panel-snakeAway">
+                <div class="servicePanelHead"><div><h5>Snake Away</h5><div class="servicePanelMeta">Seasonal every 2 months.</div></div><span><span class="suggestBadge">SUGGESTED</span><span id="snakeAwaySuggested" class="suggestNum">$0.00</span></span></div>
+                <div class="smallGrid">
+                  <div class="field"><label>RECURRING PRICE</label><input id="snakeAwayPrice" type="number" step="0.01" placeholder="Suggested if blank"></div>
+                  <div class="field"><label>FREQUENCY</label><input class="readonly" type="text" value="Every 2 months" readonly></div>
+                </div>
+              </div>
+
+              <div class="servicePanel" id="panel-termiteLetter">
+                <div class="servicePanelHead"><div><h5>WDIR</h5><div class="servicePanelMeta">Valid for 30 days.</div></div><span><span class="suggestBadge">SUGGESTED</span><span id="termiteLetterSuggested" class="suggestNum">$0.00</span></span></div>
+                <div class="smallGrid">
+                  <div class="field"><label>PRICE</label><input id="termiteLetterPrice" type="number" step="0.01" placeholder="Suggested if blank"></div>
+                  <div class="field"><label>VALIDITY</label><input class="readonly" type="text" value="Valid for 30 days" readonly></div>
+                </div>
+              </div>
+
+              <div class="servicePanel" id="panel-waspRemoval">
+                <div class="servicePanelHead"><div><h5>Wasp Removal</h5><div class="servicePanelMeta">One-time service.</div></div><span><span class="suggestBadge">SUGGESTED</span><span id="waspRemovalSuggested" class="suggestNum">$0.00</span></span></div>
+                <div class="smallGrid">
+                  <div class="field"><label>PRICE</label><input id="waspRemovalPrice" type="number" step="0.01" placeholder="Suggested if blank"></div>
+                  <div class="field"><label>FREQUENCY</label><input class="readonly" type="text" value="One-Time Service" readonly></div>
+                </div>
+              </div>
+
+              <div class="servicePanel" id="panel-yellowJacket">
+                <div class="servicePanelHead"><div><h5>Yellow Jacket Removal</h5><div class="servicePanelMeta">One-time service, treated nest site warranty.</div></div><span><span class="suggestBadge">SUGGESTED</span><span id="yellowJacketSuggested" class="suggestNum">$0.00</span></span></div>
+                <div class="smallGrid">
+                  <div class="field"><label>PRICE</label><input id="yellowJacketPrice" type="number" step="0.01" placeholder="Suggested if blank"></div>
+                  <div class="field"><label>FREQUENCY</label><input class="readonly" type="text" value="One-Time Service" readonly></div>
+                </div>
+              </div>
+
+              <div class="servicePanel" id="panel-voles">
+                <div class="servicePanelHead"><div><h5>Voles</h5><div class="servicePanelMeta">Defaults to free and notes that it can be treated as many times as needed for the one-time service.</div></div><span><span class="suggestBadge">SUGGESTED</span><span id="volesSuggested" class="suggestNum">$0.00</span></span></div>
+                <div class="smallGrid">
+                  <div class="field"><label>PRICE</label><input id="volesPrice" type="number" step="0.01" placeholder="Suggested if blank"></div>
+                  <div class="field"><label>SERVICE NOTE</label><input class="readonly" type="text" value="One-time service, treat as many times as needed" readonly></div>
+                </div>
+              </div>
+
+              <div class="serviceSummaryBox">
+                <div class="serviceSummaryEmpty" id="serviceSummaryEmpty">Select service buttons to build the quote summary.</div>
+                <div id="serviceSummaryList"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="head"><span>SIDE PANELS</span></div><section class="card">
+          <div class="head"><span>SIDE PANELS</span></div>
+          <div class="body">
+            <div class="detailLauncherGrid">
+              <button class="detailLauncherBtn" type="button" data-open-pane="properties"><strong>Properties</strong><span>Owner, status, created, updated</span></button>
+              <button class="detailLauncherBtn" type="button" data-open-pane="followups"><strong>Follow-Ups</strong><span>Track 5 touches and notes</span></button>
+              <button class="detailLauncherBtn" type="button" data-open-pane="audit"><strong>Audit</strong><span>Audited yes or no and note</span></button>
+            </div>
+          </div>
+        </section>
+
+        <div class="drawerOverlay" id="drawerOverlay"></div>
+        <aside class="detailDrawer" id="detailDrawer" aria-hidden="true">
+          <div class="detailDrawerHead">
+            <div class="detailDrawerTitle" id="detailDrawerTitle">Lead Details</div>
+            <button class="drawerCloseBtn" id="closeDetailDrawer" type="button">×</button>
+          </div>
+          <div class="detailTabRow">
+            <button class="detailTabBtn on" type="button" data-pane-tab="properties">Properties</button>
+            <button class="detailTabBtn" type="button" data-pane-tab="followups">Follow-Ups</button>
+            <button class="detailTabBtn" type="button" data-pane-tab="audit">Audit</button>
+          </div>
+          <div class="detailDrawerScroll">
+            <div class="drawerPane show" data-pane="properties">
+              <div class="statusBox" id="saveStatusBox">
+                Autosave: ready<br>
+                Lead Console mode: local browser storage
+              </div>
+              <div class="statusBox" id="propertiesBox">
+                Owner: —<br>
+                Status: —<br>
+                Created: —<br>
+                Updated: —
+              </div>
+              <div class="row2">
+                <button class="btn btn-soft" type="button" id="duplicateLeadBtn">DUPLICATE LEAD</button>
+                <button class="btn btn-danger" type="button" id="deleteLeadBtn">DELETE LEAD</button>
+              </div>
+            </div>
+            <div class="drawerPane" data-pane="followups">
+              <div class="miniPanel">
+                <h4>FOLLOW-UP TRACKER</h4>
+                <div class="followupPanel">
+                  <div class="followupTop">
+                    <div>
+                      <div class="followupProgress" id="followupProgressText">0 / 5 follow-ups logged</div>
+                      <div class="followupHint" id="followupHint">Reach out up to 5 times unless the lead declines.</div>
+                    </div>
+                    <button class="btn btn-soft" id="logFollowupBtn" type="button">LOG FOLLOW-UP</button>
+                  </div>
+                  <div class="followupBar"><div class="followupFill" id="followupProgressFill"></div></div>
+                  <div class="followupList">
+                    <div class="followupRow"><div class="followupBadge">Attempt 1</div><div class="followupStamp" id="fuStamp1">—</div><input class="followupMini" id="fuNote1" type="text" placeholder="Outcome / note"></div>
+                    <div class="followupRow"><div class="followupBadge">Attempt 2</div><div class="followupStamp" id="fuStamp2">—</div><input class="followupMini" id="fuNote2" type="text" placeholder="Outcome / note"></div>
+                    <div class="followupRow"><div class="followupBadge">Attempt 3</div><div class="followupStamp" id="fuStamp3">—</div><input class="followupMini" id="fuNote3" type="text" placeholder="Outcome / note"></div>
+                    <div class="followupRow"><div class="followupBadge">Attempt 4</div><div class="followupStamp" id="fuStamp4">—</div><input class="followupMini" id="fuNote4" type="text" placeholder="Outcome / note"></div>
+                    <div class="followupRow"><div class="followupBadge">Attempt 5</div><div class="followupStamp" id="fuStamp5">—</div><input class="followupMini" id="fuNote5" type="text" placeholder="Outcome / note"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="drawerPane" data-pane="audit">
+              <div class="miniPanel">
+                <h4>AUDIT</h4>
+                <div class="row2">
+                  <div class="field">
+                    <label>AUDITED</label>
+                    <select id="auditToggle">
+                      <option value="No">No</option>
+                      <option value="Yes">Yes</option>
+                    </select>
+                  </div>
+                  <div class="field"><label>AUDIT NOTE</label><input id="auditNote" type="text"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONSOLE SCREEN -->
+  <div id="consoleScreen" class="hide">
+    <div class="consoleWrap">
+      <div class="consoleHeader">
+        <div>
+          <div class="consoleTitle">Lead Desk</div>
+          <div class="consoleSub">Your shared sales floor for quick sorting, follow-up, and handoff.</div>
+        </div>
+
+        <div class="field" style="margin:0">
+          <label>SEARCH LEADS</label>
+          <input id="consoleSearch" type="text" placeholder="Name, phone, address">
+        </div>
+
+        <div class="field" style="margin:0">
+          <label>CSR</label>
+          <select id="consoleOwnerFilter"></select>
+        </div>
+
+        <div class="field" style="margin:0">
+          <label>STATUS</label>
+          <select id="consoleStatusFilter">
+            <option value="All">All Statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="Sold QT">Sold QT</option>
+            <option value="Sold Other">Sold Other</option>
+            <option value="Declined">Declined</option>
+            <option value="Misc">Misc</option>
+            <option value="Sold Bundle">Sold Bundle</option>
+            <option value="No Contact Yet">No Contact Yet</option>
+          </select>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:end;justify-content:flex-end;">
+          <button class="btn btn-soft" id="openSettingsBtn" type="button">SETTINGS</button>
+          <button class="btn btn-soft" id="newLeadFromConsoleBtn" type="button">+ NEW LEAD</button>
+          <button class="btn btn-primary" id="returnToLeadBtn" type="button">OPEN CURRENT LEAD</button>
+        </div>
+      </div>
+      <section class="card">
+        <div class="head"><span>LEAD DESK VIEW</span></div>
+        <div class="body">
+                    <div class="toolbarRow">
+            <div class="viewToggle">
+              <button class="miniBtn on" id="chronoViewBtn" type="button">Chronological View</button>
+              <button class="miniBtn" id="boardViewBtn" type="button">Board View</button>
+            </div>
+            <div class="quickFilters">
+              <button class="miniBtn" id="allLeadsFilterBtn" type="button">All Leads</button>
+              <button class="miniBtn" id="todayFilterBtn" type="button">Today</button>
+              <button class="miniBtn" id="myLeadsTodayBtn" type="button">My Leads Today</button>
+              <button class="miniBtn" id="unworkedTodayBtn" type="button">Unworked Today</button>
+            </div>
+          </div>
+          <div class="chronoList" id="chronoList"></div>
+          <div class="consoleBoard hide" id="consoleBoard"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div id="settingsModal" class="modalBackdrop hide">
+  <div class="modalCard">
+    <div class="modalHead">
+      <span>Manager Settings</span>
+      <button class="btn" id="closeSettingsBtn" type="button">Close</button>
+    </div>
+    <div class="modalBody">
+      <div class="statusBox" style="background:#fff">
+        Manage CSR names, PINs, roles, and active status.
+      </div>
+      <div id="settingsUsersList" class="settingsUsersList"></div>
+      <div>
+        <button class="btn btn-soft" id="addSettingsUserBtn" type="button">+ ADD USER</button>
+      </div>
+    </div>
+    <div class="modalFoot">
+      <button class="btn" id="cancelSettingsBtn" type="button">Cancel</button>
+      <button class="btn btn-primary" id="saveSettingsBtn" type="button">Save Settings</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const STORAGE_KEY = 'kindLeadConsole.v3';
+  const LAST_LEAD_KEY = 'kindLeadConsole.lastLeadId';
+  const SETTINGS_KEY = 'kindLeadConsole.settings';
+  const YIF_DISCOUNT = 0.05;
+  const SM_RATE_PER_LF = 1.5;
+  const SM_MIN_YEARLY = 300;
+  const BUNDLE_DISC = 10;
+
+  const sentriconCharts = {
+    '1': [
+      { min:1000, max:1500, install:199, monitoring:300, monthly:25, year1:499 },
+      { min:1501, max:2000, install:240, monitoring:360, monthly:30, year1:600 },
+      { min:2001, max:2500, install:260, monitoring:390, monthly:32.5, year1:650 },
+      { min:2501, max:3000, install:300, monitoring:450, monthly:37.5, year1:750 }
+    ],
+    '2': [
+      { min:0, max:3000, install:199, monitoring:300, monthly:25, year1:499 },
+      { min:3001, max:3500, install:230, monitoring:350, monthly:29.17, year1:580 },
+      { min:3501, max:4000, install:280, monitoring:420, monthly:35, year1:700 },
+      { min:4001, max:5000, install:330, monitoring:500, monthly:41.67, year1:830 }
+    ]
+  };
+
+  const dynamicServiceDefs = {
+    pestControl:{ label:'Pest Control' },
+    sentricon:{ label:'Termite Protection' },
+    mosquitoReduction:{ label:'Mosquito Reduction' },
+    mosquitoMonthly:{ label:'Mosquito Monthly' },
+    mosquitoFleaTick:{ label:'Mosquito / Flea / Tick' },
+    bedBug:{ label:'Bed Bug' },
+    germanRoaches:{ label:'German Roaches' },
+    indoorFleas:{ label:'Indoor Fleas' },
+    carpenterBeeTraps:{ label:'Carpenter Bee Traps' },
+    snakeAway:{ label:'Snake Away' },
+    termiteLetter:{ label:'WDIR' },
+    waspRemoval:{ label:'Wasp Removal' },
+    yellowJacket:{ label:'Yellow Jacket Removal' },
+    voles:{ label:'Voles' }
+  };
+
+  const STATUS_ORDER = [
+    'No Contact Yet',
+    'Pending',
+    'Sold QT',
+    'Sold Bundle',
+    'Sold Other',
+    'Declined',
+    'Misc'
+  ];
+
+  const tiers = [
+    {min:1000,max:1499,qt:139},
+    {min:1500,max:2499,qt:159},
+    {min:2500,max:3499,qt:179},
+    {min:3500,max:3999,qt:199},
+    {min:4000,max:4499,qt:209},
+    {min:4500,max:999999,qt:219},
+  ];
+
+  /*
+   * -------------------------------------------------------------
+   * Remote API configuration
+   *
+   * To make this lead console work for multiple CSRs and keep data
+   * around beyond a single browser, you need to synchronize the
+   * lead data with a server-side store.  Set API_BASE_URL to the
+   * base URL of your backend service that handles lead records.  It
+   * should expose RESTful endpoints such as `GET /leads` to read
+   * all leads, `PUT /leads/:id` to create or update a lead and
+   * `DELETE /leads/:id` to remove a lead.  The functions defined
+   * below use the Fetch API to talk to that service.  Replace the
+   * placeholder URL with your actual API endpoint when deploying.
+   */
+  // Base URL of the lead storage API.  When running the
+  // accompanying server.js locally, set this to
+  // 'http://localhost:3000/api'.  If you deploy your own backend,
+  // replace this with the full URL (e.g. https://yourdomain.com/api).
+  const API_BASE_URL = '/.netlify/functions/api';
+
+  /**
+   * Fetch all leads from the server.  Returns an object with a
+   * `leads` array on success.  If an error occurs the function
+   * returns null.  You can call this at startup to hydrate the
+   * local cache from a persistent store.
+   */
+  
+  async function fetchLeadsFromServer(){
+    try{
+      const resp = await fetch(API_BASE_URL, { headers: { 'Accept': 'application/json' } });
+      if(!resp.ok) throw new Error('Network error');
+      const data = await resp.json();
+      backendUsers = Array.isArray(data.users) ? data.users.map(normalizeUserRecord).map(u => ({ ...u, pin:'' })) : [];
+      refreshOwnerPickers();
+      return {
+        leads: Array.isArray(data.leads) ? data.leads.map(normalizeLeadFromServer) : [],
+        users: backendUsers
+      };
+    } catch(err){
+      console.warn('Failed to fetch leads from server', err);
+      return null;
+    }
+  }
+
+  async function upsertLeadOnServer(lead){
+    try{
+      await fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action:'upsert', lead })
+      });
+    } catch(err){
+      console.warn('Failed to sync lead to server', err);
+    }
+  }
+
+  async function deleteLeadFromServer(id){
+    try{
+      await fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action:'delete', id })
+      });
+    } catch(err){
+      console.warn('Failed to delete lead from server', err);
+    }
+  }
+
+  async function loginManagerOnServer(name, pin){
+    try{
+      const resp = await fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action:'login', name, pin })
+      });
+      if(!resp.ok) throw new Error('Network error');
+      return await resp.json();
+    } catch(err){
+      console.warn('Failed to verify manager', err);
+      return { ok:false };
+    }
+  }
+
+  async function fetchUsersForManager(name, pin){
+    try{
+      const resp = await fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action:'getUsersForManager', name, pin })
+      });
+      if(!resp.ok) throw new Error('Network error');
+      return await resp.json();
+    } catch(err){
+      console.warn('Failed to load manager users', err);
+      return { ok:false, users:[] };
+    }
+  }
+
+  async function updateUsersOnServer(users, auth){
+    try{
+      const resp = await fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action:'updateUsers', users, name: auth?.name || '', pin: auth?.pin || '' })
+      });
+      if(!resp.ok) throw new Error('Network error');
+      return await resp.json();
+    } catch(err){
+      console.warn('Failed to update users', err);
+      return { ok:false };
+    }
+  }
+
+  const $ = (id) => document.getElementById(id);
+
+  let activeLeadId = null;
+  let currentScreen = 'form';
+  let backendUsers = [];
+  let settingsUsersDraft = [];
+  let currentManagerAuth = null;
+  let currentUserAuth = null;
+
+  const state = {
+    qtOn: true,
+    smOn: false,
+    yifOn: false,
+    bundleOn: false,
+    customerType: 'customer',
+    servicesSelected: ['pestControl'],
+    termiteCalcMode: 'lf',
+    serviceMenuOpen: false,
+    qtInitTouched: false,
+    deskView: 'chrono',
+    quickFilter: 'all'
+  };
+
+  function money(n){
+    const x = Number.isFinite(n) ? n : 0;
+    return x.toLocaleString(undefined,{style:'currency',currency:'USD'});
+  }
+
+  function money0(n){
+    const x = Number.isFinite(n) ? n : 0;
+    return x.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0});
+  }
+
+  function ceil(n){
+    return Math.ceil(Number.isFinite(n) ? n : 0);
+  }
+
+  function suggestQt(sqft){
+    const s = Number(sqft);
+    if(!Number.isFinite(s) || s <= 0) return 0;
+    for(const t of tiers){
+      if(s >= t.min && s <= t.max) return t.qt;
+    }
+    return 0;
+  }
+
+  function setNow(){
+    const d = new Date();
+    $('topDate').value = d.toISOString().slice(0,10);
+    $('topTime').value = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  }
+
+  function initTiers(){
+    const tb = $('tiersTable');
+    tb.innerHTML = '';
+    for(const t of tiers){
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${t.min.toLocaleString()} - ${t.max === 999999 ? 'UP' : t.max.toLocaleString()}</td>
+                      <td class="right">${money(t.qt)}</td>`;
+      tb.appendChild(tr);
+    }
+  }
+
+  function updateChecklistChips(){
+    document.querySelectorAll('.chip').forEach(c => {
+      const i = c.querySelector('input');
+      c.classList.toggle('on', !!i?.checked);
+    });
+  }
+
+  function setToggle(id, on){
+    $(id).classList.toggle('on', !!on);
+  }
+
+  function updateTogglesUI(){
+    state.qtOn = state.servicesSelected.includes('pestControl');
+    state.smOn = state.servicesSelected.includes('sentricon');
+    setToggle('btnQT', state.qtOn);
+    setToggle('btnSM', state.smOn);
+    setToggle('btnYIF', state.yifOn);
+    setToggle('btnBundle', state.bundleOn);
+  }
+
+
+  function isCustomerPricing(){
+    return state.customerType !== 'nonCustomer';
+  }
+
+  function updateCustomerTypeUI(){
+    $('custTypeCustomer').classList.toggle('on', isCustomerPricing());
+    $('custTypeNonCustomer').classList.toggle('on', !isCustomerPricing());
+  }
+
+  function updateServiceButtonsUI(){
+    document.querySelectorAll('[data-service]').forEach(btn => {
+      const key = btn.getAttribute('data-service');
+      btn.classList.toggle('on', state.servicesSelected.includes(key));
+    });
+  }
+
+  function updateServicePanelsVisibility(){
+    Object.keys(dynamicServiceDefs).forEach(key => {
+      const panel = $('panel-' + key);
+      if(panel) panel.classList.toggle('show', state.servicesSelected.includes(key));
+    });
+  }
+
+  function syncServicesField(){
+    $('custServices').value = state.servicesSelected.map(key => dynamicServiceDefs[key]?.label).filter(Boolean).join(', ');
+  }
+
+  function toggleServiceSelection(key){
+    if(!dynamicServiceDefs[key]) return;
+    const set = new Set(state.servicesSelected);
+    if(set.has(key)) set.delete(key); else set.add(key);
+    if(!set.size) set.add('pestControl');
+    state.servicesSelected = Array.from(set);
+    state.qtOn = state.servicesSelected.includes('pestControl');
+    state.smOn = state.servicesSelected.includes('sentricon');
+    updateServiceButtonsUI();
+    updateServicePanelsVisibility();
+    updateTogglesUI();
+    syncServicesField();
+  }
+
+  function matchSentriconChart(storyType, sqft){
+    const rows = sentriconCharts[String(storyType)] || [];
+    return rows.find(row => sqft >= row.min && sqft <= row.max) || null;
+  }
+
+  function getNumberOrDefault(id, fallback){
+    const raw = ($(id)?.value || '').trim();
+    const num = parseFloat(raw);
+    return Number.isFinite(num) ? num : fallback;
+  }
+
+  function updateServiceMenuUI(){
+    $('servicesMenuPanel').classList.toggle('show', !!state.serviceMenuOpen);
+    $('openServiceMenuBtn').textContent = state.serviceMenuOpen ? 'HIDE SERVICES' : 'SERVICES';
+  }
+
+  function updateTermiteCalcModeUI(){
+    $('termiteCalcLfBtn').classList.toggle('on', state.termiteCalcMode !== 'chart');
+    $('termiteCalcChartBtn').classList.toggle('on', state.termiteCalcMode === 'chart');
+    $('termiteSuggestedModeLabel').textContent = state.termiteCalcMode === 'chart' ? 'Mode: Stories + SQFT chart' : 'Mode: Linear ft default';
+  }
+
+  function collectDynamicPricingFields(){
+    const ids = ['bedBugFirstPrice','bedBugAddlPrice','germanInitial','germanFollowup','indoorFleaPrice','carpenterBeePrice','mosquitoReductionPrice','mosquitoMonthlyPrice','mosquitoFleaTickPrice','snakeAwayPrice','termiteLetterPrice','waspRemovalPrice','yellowJacketPrice','volesPrice'];
+    const out = {};
+    ids.forEach(id => { out[id] = $(id)?.value || ''; });
+    return out;
+  }
+
+  function loadDynamicPricingFields(data){
+    const src = data || {};
+    ['bedBugFirstPrice','bedBugAddlPrice','germanInitial','germanFollowup','indoorFleaPrice','carpenterBeePrice','mosquitoReductionPrice','mosquitoMonthlyPrice','mosquitoFleaTickPrice','snakeAwayPrice','termiteLetterPrice','waspRemovalPrice','yellowJacketPrice','volesPrice'].forEach(id => { if($(id)) $(id).value = src[id] || ''; });
+  }
+
+  function getDynamicServiceSummary(){
+    const items = [];
+    const customer = isCustomerPricing();
+    const bedBugRooms = Math.max(1, parseInt($('bedBugRooms').value || '1', 10) || 1);
+    const indoorFleaRooms = Math.max(1, parseInt($('indoorFleaRooms').value || '1', 10) || 1);
+    const carpenterBeeQty = Math.max(1, parseInt($('carpenterBeeQty').value || '1', 10) || 1);
+
+    if(state.servicesSelected.includes('bedBug')){
+      const first = getNumberOrDefault('bedBugFirstPrice', customer ? 399 : 499);
+      const addl = getNumberOrDefault('bedBugAddlPrice', customer ? 299 : 399);
+      items.push({ label:'Bed Bug', amount:first + Math.max(0, bedBugRooms - 1) * addl, note:`${bedBugRooms} room${bedBugRooms === 1 ? '' : 's'}` });
+    }
+    if(state.servicesSelected.includes('germanRoaches')) items.push({ label:'German Roaches Initial', amount:getNumberOrDefault('germanInitial', customer ? 199 : 299), note:`Follow-up ${money(getNumberOrDefault('germanFollowup', customer ? 59 : 89))}` });
+    if(state.servicesSelected.includes('indoorFleas')) items.push({ label:'Indoor Fleas', amount:getNumberOrDefault('indoorFleaPrice', customer ? 129 : 249) * indoorFleaRooms, note:`${indoorFleaRooms} room${indoorFleaRooms === 1 ? '' : 's'}` });
+    if(state.servicesSelected.includes('carpenterBeeTraps')) items.push({ label:'Carpenter Bee Traps', amount:getNumberOrDefault('carpenterBeePrice', customer ? 40 : 50) * carpenterBeeQty, note:`${carpenterBeeQty} trap${carpenterBeeQty === 1 ? '' : 's'}` });
+    if(state.servicesSelected.includes('mosquitoReduction')) items.push({ label:'Mosquito Reduction', amount:getNumberOrDefault('mosquitoReductionPrice', customer ? 69 : 89), note:'Every 3 weeks' });
+    if(state.servicesSelected.includes('mosquitoMonthly')) items.push({ label:'Mosquito Monthly', amount:getNumberOrDefault('mosquitoMonthlyPrice', customer ? 69 : 99), note:'Every 4 weeks' });
+    if(state.servicesSelected.includes('mosquitoFleaTick')) items.push({ label:'Mosquito / Flea / Tick', amount:getNumberOrDefault('mosquitoFleaTickPrice', customer ? 89 : 109), note:'Every 3 weeks' });
+    if(state.servicesSelected.includes('snakeAway')) items.push({ label:'Snake Away', amount:getNumberOrDefault('snakeAwayPrice', customer ? 50 : 99), note:'Every 2 months' });
+    if(state.servicesSelected.includes('termiteLetter')) items.push({ label:'WDIR', amount:getNumberOrDefault('termiteLetterPrice', customer ? 99 : 199), note:'30 days' });
+    if(state.servicesSelected.includes('waspRemoval')) items.push({ label:'Wasp Removal', amount:getNumberOrDefault('waspRemovalPrice', customer ? 0 : 199), note:customer ? 'Free with QT' : 'One-time' });
+    if(state.servicesSelected.includes('yellowJacket')) items.push({ label:'Yellow Jacket Removal', amount:getNumberOrDefault('yellowJacketPrice', customer ? 399 : 499), note:'One-time' });
+    if(state.servicesSelected.includes('voles')) items.push({ label:'Voles', amount:getNumberOrDefault('volesPrice', 0), note:'One-time, treat as many times as needed' });
+    return items;
+  }
+
+  function renderServiceSummary(extraItems){
+    const list = $('serviceSummaryList');
+    const items = extraItems.filter(item => item && Number.isFinite(item.amount));
+    $('serviceSummaryEmpty').style.display = items.length ? 'none' : 'block';
+    list.innerHTML = items.map(item => `<div class="serviceSummaryRow"><span>${escapeHtml(item.label)}${item.note ? ` · ${escapeHtml(item.note)}` : ''}</span><span>${money(item.amount)}</span></div>`).join('');
+  }
+
+  function updateDynamicServiceReadouts(){
+    const customer = isCustomerPricing();
+    const bedBugRooms = Math.max(1, parseInt($('bedBugRooms').value || '1', 10) || 1);
+    const indoorFleaRooms = Math.max(1, parseInt($('indoorFleaRooms').value || '1', 10) || 1);
+    const carpenterBeeQty = Math.max(1, parseInt($('carpenterBeeQty').value || '1', 10) || 1);
+    const bedBugFirstSuggested = customer ? 399 : 499;
+    const bedBugAddlSuggested = customer ? 299 : 399;
+    const germanInitialSuggested = customer ? 199 : 299;
+    const germanFollowSuggested = customer ? 59 : 89;
+    const indoorFleaSuggested = customer ? 129 : 249;
+    const carpenterBeeSuggested = customer ? 40 : 50;
+    const mosquitoReductionSuggested = customer ? 69 : 89;
+    const mosquitoMonthlySuggested = customer ? 69 : 99;
+    const mosquitoFleaTickSuggested = customer ? 89 : 109;
+    const snakeAwaySuggested = customer ? 50 : 99;
+    const termiteLetterSuggested = customer ? 99 : 199;
+    const waspRemovalSuggested = customer ? 0 : 199;
+    const yellowJacketSuggested = customer ? 399 : 499;
+    const volesSuggested = 0;
+
+    $('bedBugFirstPrice').placeholder = String(bedBugFirstSuggested);
+    $('bedBugAddlPrice').placeholder = String(bedBugAddlSuggested);
+    $('germanInitial').placeholder = String(germanInitialSuggested);
+    $('germanFollowup').placeholder = String(germanFollowSuggested);
+    $('indoorFleaPrice').placeholder = String(indoorFleaSuggested);
+    $('carpenterBeePrice').placeholder = String(carpenterBeeSuggested);
+    $('mosquitoReductionPrice').placeholder = String(mosquitoReductionSuggested);
+    $('mosquitoMonthlyPrice').placeholder = String(mosquitoMonthlySuggested);
+    $('mosquitoFleaTickPrice').placeholder = String(mosquitoFleaTickSuggested);
+    $('snakeAwayPrice').placeholder = String(snakeAwaySuggested);
+    $('termiteLetterPrice').placeholder = String(termiteLetterSuggested);
+    $('waspRemovalPrice').placeholder = String(waspRemovalSuggested);
+    $('yellowJacketPrice').placeholder = String(yellowJacketSuggested);
+    $('volesPrice').placeholder = String(volesSuggested);
+
+    $('bedBugTotal').value = money(getNumberOrDefault('bedBugFirstPrice', bedBugFirstSuggested) + Math.max(0, bedBugRooms - 1) * getNumberOrDefault('bedBugAddlPrice', bedBugAddlSuggested));
+    $('indoorFleaTotal').value = money(getNumberOrDefault('indoorFleaPrice', indoorFleaSuggested) * indoorFleaRooms);
+    $('carpenterBeeTotal').value = money(getNumberOrDefault('carpenterBeePrice', carpenterBeeSuggested) * carpenterBeeQty);
+
+    $('mosquitoReductionSuggested').textContent = money(mosquitoReductionSuggested);
+    $('mosquitoMonthlySuggested').textContent = money(mosquitoMonthlySuggested);
+    $('mosquitoFleaTickSuggested').textContent = money(mosquitoFleaTickSuggested);
+    $('snakeAwaySuggested').textContent = money(snakeAwaySuggested);
+    $('termiteLetterSuggested').textContent = money(termiteLetterSuggested);
+    $('waspRemovalSuggested').textContent = money(waspRemovalSuggested);
+    $('yellowJacketSuggested').textContent = money(yellowJacketSuggested);
+    $('volesSuggested').textContent = money(volesSuggested);
+  }
+
+  function formatDateTime(ts){
+    if(!ts) return '';
+    const d = new Date(ts);
+    if(Number.isNaN(d.getTime())) return '';
+    return d.toLocaleString();
+  }
+
+  function formatShortDate(ts){
+    if(!ts) return '';
+    const d = new Date(ts);
+    if(Number.isNaN(d.getTime())) return '';
+    return d.toLocaleDateString(undefined,{month:'short',day:'numeric'});
+  }
+
+  function getGroupLabel(ts){
+    if(!ts) return 'No Date';
+    const d = new Date(ts);
+    if(Number.isNaN(d.getTime())) return 'No Date';
+    const now = new Date();
+    const y = new Date(now); y.setDate(now.getDate()-1);
+    if(isSameLocalDay(d, now)) return 'Today';
+    if(isSameLocalDay(d, y)) return 'Yesterday';
+    return d.toLocaleDateString(undefined,{weekday:'long', month:'short', day:'numeric'});
+  }
+
+  function getInitials(name){
+    const bits = String(name || 'Lead').trim().split(/\s+/).filter(Boolean).slice(0,2);
+    return bits.map(x => x[0]?.toUpperCase() || '').join('') || 'LD';
+  }
+
+  function statusSlug(status){
+    return String(status || 'pending').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  }
+
+  function isSameLocalDay(a, b){
+    return a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate();
+  }
+
+  function isLeadToday(lead){
+    const stamp = lead?.updatedAt || lead?.createdAt;
+    if(!stamp) return false;
+    const d = new Date(stamp);
+    return !Number.isNaN(d.getTime()) && isSameLocalDay(d, new Date());
+  }
+
+  function getLeadTouchedAt(lead){
+    return lead?.lastTouchedAt || lead?.updatedAt || lead?.createdAt || '';
+  }
+
+  function isLeadWorkedToday(lead){
+    const stamp = getLeadTouchedAt(lead);
+    if(!stamp) return false;
+    const d = new Date(stamp);
+    return !Number.isNaN(d.getTime()) && isSameLocalDay(d, new Date());
+  }
+
+  function escapeHtml(str){
+    return String(str ?? '')
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'","&#39;");
+  }
+
+  function getStore(){
+    try{
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { leads: [] };
+    } catch {
+      return { leads: [] };
+    }
+  }
+
+  function setStore(store){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+  }
+
+  
+  function getSettings(){
+    try{
+      const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {};
+      return {
+        team: Array.isArray(saved.team) && saved.team.length ? saved.team : ['Kayla','Ally','Taylor','Bre','Aulana','AP','Caitlyn','Tammie','Kat']
+      };
+    } catch {
+      return { team:['Kayla','Ally','Taylor','Bre','Aulana','AP','Caitlyn','Tammie','Kat'] };
+    }
+  }
+
+  function setSettings(settings){
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  }
+
+  function normalizeUserRecord(user){
+    return {
+      name: String(user?.name || '').trim(),
+      pin: String(user?.pin ?? '').trim(),
+      role: String(user?.role || 'csr').trim().toLowerCase() === 'manager' ? 'manager' : 'csr',
+      active: String(user?.active || 'yes').trim().toLowerCase() === 'no' ? 'no' : 'yes'
+    };
+  }
+
+  function getTeamNames(){
+    const activeUsers = backendUsers
+      .map(normalizeUserRecord)
+      .filter(u => u.active === 'yes' && u.name)
+      .map(u => u.name);
+    if(activeUsers.length){
+      const unique = [...new Set(activeUsers)];
+      setSettings({ team: unique });
+      return unique;
+    }
+    return getSettings().team;
+  }
+
+  function renderSettingsUsers(){
+    const host = $('settingsUsersList');
+    if(!host) return;
+    host.innerHTML = settingsUsersDraft.map((user, index) => `
+      <div class="settingsUserRow" data-user-row="${index}">
+        <div class="field">
+          <label>Name</label>
+          <input data-user-name="${index}" type="text" value="${escapeHtml(user.name || '')}">
+        </div>
+        <div class="field">
+          <label>PIN</label>
+          <input data-user-pin="${index}" type="text" value="${escapeHtml(user.pin || '')}">
+        </div>
+        <div class="field">
+          <label>Role</label>
+          <select data-user-role="${index}">
+            <option value="csr" ${user.role === 'csr' ? 'selected' : ''}>CSR</option>
+            <option value="manager" ${user.role === 'manager' ? 'selected' : ''}>Manager</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Active</label>
+          <select data-user-active="${index}">
+            <option value="yes" ${user.active !== 'no' ? 'selected' : ''}>Yes</option>
+            <option value="no" ${user.active === 'no' ? 'selected' : ''}>No</option>
+          </select>
+        </div>
+        <button class="btn btn-danger" data-remove-user="${index}" type="button">Remove</button>
+      </div>
+    `).join('');
+
+    host.querySelectorAll('[data-remove-user]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.getAttribute('data-remove-user'));
+        settingsUsersDraft.splice(idx, 1);
+        renderSettingsUsers();
+      });
+    });
+  }
+
+  function collectSettingsUsers(){
+    const rows = [];
+    document.querySelectorAll('#settingsUsersList .settingsUserRow').forEach((row, index) => {
+      const name = row.querySelector(`[data-user-name="${index}"]`)?.value.trim() || '';
+      const pin = row.querySelector(`[data-user-pin="${index}"]`)?.value.trim() || '';
+      const role = row.querySelector(`[data-user-role="${index}"]`)?.value || 'csr';
+      const active = row.querySelector(`[data-user-active="${index}"]`)?.value || 'yes';
+      if(!name) return;
+      rows.push(normalizeUserRecord({ name, pin, role, active }));
+    });
+    return rows.filter((u, i, arr) => arr.findIndex(x => x.name.toLowerCase() === u.name.toLowerCase()) === i);
+  }
+
+  async function openSettingsModal(){
+    if(!currentUserAuth || currentUserAuth.role !== 'manager'){
+      alert('Manager access only.');
+      return;
+    }
+    const userResult = await fetchUsersForManager(currentUserAuth.name, currentUserAuth.pin);
+    if(!userResult.ok){
+      alert('Could not load manager settings.');
+      return;
+    }
+
+    currentManagerAuth = { name: currentUserAuth.name, pin: currentUserAuth.pin };
+    settingsUsersDraft = (Array.isArray(userResult.users) ? userResult.users : [])
+      .map(normalizeUserRecord);
+    if(!settingsUsersDraft.some(u => u.role === 'manager')){
+      settingsUsersDraft.push(normalizeUserRecord({ name: currentUserAuth.name, pin: currentUserAuth.pin, role:'manager', active:'yes' }));
+    }
+    renderSettingsUsers();
+    $('settingsModal').classList.remove('hide');
+  }
+
+  function closeSettingsModal(){
+    currentManagerAuth = null;
+    $('settingsModal').classList.add('hide');
+  }
+
+  async function saveManagerSettings(){
+    const users = collectSettingsUsers();
+    if(!users.length){
+      alert('Add at least one user.');
+      return;
+    }
+    if(!users.some(u => u.role === 'manager' && u.active === 'yes')){
+      alert('Keep at least one active manager.');
+      return;
+    }
+    if(users.some(u => !u.pin)){
+      alert('Every user needs a PIN.');
+      return;
+    }
+
+    const result = await updateUsersOnServer(users, currentManagerAuth);
+    if(!result.ok){
+      alert('Could not save settings.');
+      return;
+    }
+
+    backendUsers = users.map(u => ({ ...normalizeUserRecord(u), pin:'' }));
+    setSettings({ team: getTeamNames() });
+    refreshOwnerPickers();
+    if(!$('leadOwner').value || !getTeamNames().includes($('leadOwner').value)) $('leadOwner').value = getTeamNames()[0] || '';
+    if($('consoleOwnerFilter').value !== 'All' && !getTeamNames().includes($('consoleOwnerFilter').value)) $('consoleOwnerFilter').value = 'All';
+    closeSettingsModal();
+    renderConsole();
+    alert('Settings saved to the backend.');
+  }
+
+  function fillSelect(selectId, options, placeholder){
+    const el = $(selectId);
+    if(!el) return;
+    const current = el.value;
+    el.innerHTML = '';
+    if(placeholder){
+      const opt = document.createElement('option');
+      opt.value = placeholder.value;
+      opt.textContent = placeholder.label;
+      el.appendChild(opt);
+    }
+    options.forEach(value => {
+      const opt = document.createElement('option');
+      opt.value = value;
+      opt.textContent = value;
+      el.appendChild(opt);
+    });
+    if([...el.options].some(o => o.value === current)) el.value = current;
+  }
+
+  function normalizeLeadFromServer(lead){
+    let result = lead || {};
+    if(!result.customer){
+      const blank = getBlankLead();
+      blank.id = result.id || blank.id;
+      blank.owner = result.owner || blank.owner;
+      blank.status = result.status || blank.status;
+      blank.createdAt = result.createdAt || blank.createdAt;
+      blank.updatedAt = result.updatedAt || blank.updatedAt;
+      blank.lastTouchedAt = result.lastTouchedAt || result.lastTouch || '';
+      blank.customer.name = result.name || '';
+      blank.customer.phone = result.phone || '';
+      blank.customer.address = result.address || '';
+      blank.customer.leadSource = result.leadSource || '';
+      blank.customer.referredBy = result.referredBy || '';
+      blank.customer.notes = result.notes || '';
+      blank.audit.audited = result.audited || 'No';
+      blank.audit.note = result.auditNote || '';
+      if(Array.isArray(result.followups)){
+        blank.followUps = result.followups.map(item => ({ at:item?.date || item?.at || '', note:item?.note || '' }));
+      } else if(Array.isArray(result.followUps)){
+        blank.followUps = result.followUps;
+      }
+      result = blank;
+    }
+    ensureFollowUps(result);
+    return result;
+  }
+
+  function refreshOwnerPickers(){
+    const team = getTeamNames();
+    fillSelect('leadOwner', team);
+    fillSelect('consoleOwnerFilter', team, { value:'All', label:'All CSRs' });
+    if(!$('leadOwner').value) $('leadOwner').value = team[0] || 'Aulana';
+    if(!$('consoleOwnerFilter').value) $('consoleOwnerFilter').value = 'All';
+    if($('loginName')) buildLoginOptions();
+  }
+
+  function makeLeadId(){
+    return 'lead_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+  }
+
+  function blankFollowUps(){
+    return Array.from({length:5}, () => ({ at:'', note:'' }));
+  }
+
+  function ensureFollowUps(lead){
+    if(!lead.followUps || !Array.isArray(lead.followUps)) lead.followUps = blankFollowUps();
+    lead.followUps = lead.followUps.slice(0,5);
+    while(lead.followUps.length < 5) lead.followUps.push({ at:'', note:'' });
+    lead.followUps = lead.followUps.map(item => ({ at: item?.at || '', note: item?.note || '' }));
+    return lead.followUps;
+  }
+
+  function getFollowupCount(lead){
+    return ensureFollowUps(lead).filter(x => x.at).length;
+  }
+
+  function needsFollowUp(lead){
+    return (lead.status || '') !== 'Declined' && getFollowupCount(lead) < 5;
+  }
+
+  function getNextFollowupIndex(lead){
+    return ensureFollowUps(lead).findIndex(x => !x.at);
+  }
+
+  function getLeadById(id){
+    const store = getStore();
+    return store.leads.find(l => l.id === id) || null;
+  }
+
+  function getBlankLead(){
+    const now = new Date().toISOString();
+    return {
+      id: makeLeadId(),
+      owner: (currentUserAuth && currentUserAuth.name) || $('leadOwner')?.value || getSettings().team[0] || 'CSR 1',
+      status: 'Pending',
+      pricingMode: 'customer',
+      servicesSelected: ['pestControl'],
+      createdAt: now,
+      updatedAt: now,
+      lastTouchedAt: '',
+      topDate: '',
+      topTime: '',
+      customer: {
+        name: '',
+        leadSource: '',
+        internetSource: '',
+        referredBy: '',
+        salesmanTech: '',
+        phone: '',
+        email: '',
+        address: '',
+        city: '',
+        state: 'NC',
+        zip: '',
+        county: '',
+        paymentType: '',
+        servicesNeeded: '',
+        notes: ''
+      },
+      audit: {
+        audited: 'No',
+        note: ''
+      },
+      checklist: {
+        INT:false, PS:false, WD:false, GR:false, LB:false, RS:false, AUTOPAY:false
+      },
+      services: {
+        qtOn:true, smOn:false, yifOn:false, bundleOn:false
+      },
+      measurements: {
+        sqft:'',
+        lf:''
+      },
+      serviceDetails: {
+        sentriconStoryType:'1',
+        sentriconExisting:'no',
+        termiteCalcMode:'lf',
+        bedBugRooms:'1',
+        indoorFleaRooms:'1',
+        carpenterBeeQty:'1'
+      },
+      pricing: {
+        qtQuote:'',
+        qtInit:'',
+        smQuote:'',
+        smInstall:''
+      },
+      dynamicPricing: {}
+      
+    };
+  }
+
+  function saveLeadObject(lead){
+    const store = getStore();
+    const idx = store.leads.findIndex(l => l.id === lead.id);
+    lead.updatedAt = new Date().toISOString();
+    if(idx >= 0){
+      store.leads[idx] = lead;
+    } else {
+      store.leads.unshift(lead);
+    }
+    setStore(store);
+    localStorage.setItem(LAST_LEAD_KEY, lead.id);
+
+    // Persist the lead to the server so that it is available to
+    // every CSR.  This call is asynchronous but we do not await it
+    // here to avoid blocking the UI.  If the network is offline
+    // the promise will reject silently and the lead will remain
+    // stored locally until the next successful save.
+    try {
+      upsertLeadOnServer(lead);
+    } catch(e) {
+      /* network errors are logged inside upsertLeadOnServer */
+    }
+  }
+
+  function deleteLead(id){
+    const store = getStore();
+    store.leads = store.leads.filter(l => l.id !== id);
+    setStore(store);
+
+    // Remove the lead from the server as well
+    try {
+      deleteLeadFromServer(id);
+    } catch(e) {
+      /* network errors are logged inside deleteLeadFromServer */
+    }
+  }
+
+  function collectLeadFromForm(){
+    const existing = getLeadById(activeLeadId) || getBlankLead();
+    existing.owner = $('leadOwner').value || getSettings().team[0] || 'CSR 1';
+    existing.status = $('leadStatus').value;
+    existing.pricingMode = state.customerType;
+    existing.servicesSelected = [...state.servicesSelected];
+    existing.topDate = $('topDate').value || '';
+    existing.topTime = $('topTime').value || '';
+    existing.customer = {
+      name: $('custName').value || '',
+      leadSource: $('custLeadSource').value || '',
+      referredBy: $('custReferredBy').value || '',
+      phone: $('custPhone').value || '',
+      email: $('custEmail').value || '',
+      address: $('custAddress').value || '',
+      city: $('custCity').value || '',
+      state: $('custState').value || '',
+      zip: $('custZip').value || '',
+      county: $('custCounty').value || '',
+      paymentType: $('paymentType').value || '',
+      servicesNeeded: $('custServices').value || '',
+      notes: $('custNotes').value || ''
+    };
+    existing.audit = {
+      audited: $('auditToggle').value || 'No',
+      note: $('auditNote').value || ''
+    };
+    existing.checklist = {
+      INT: $('chkINT').checked,
+      PS: $('chkPS').checked,
+      WD: $('chkWD').checked,
+      GR: $('chkGR').checked,
+      LB: $('chkLB').checked,
+      RS: $('chkRS').checked,
+      AUTOPAY: $('chkAutopay').checked
+    };
+    existing.services = {
+      qtOn: state.qtOn,
+      smOn: state.smOn,
+      yifOn: state.yifOn,
+      bundleOn: state.bundleOn
+    };
+    existing.measurements = {
+      sqft: $('sqft').value || '',
+      lf: $('lf').value || ''
+    };
+    existing.serviceDetails = {
+      sentriconStoryType: $('sentriconStoryType').value || '1',
+      sentriconExisting: $('sentriconExisting').value || 'no',
+      termiteCalcMode: state.termiteCalcMode || 'lf',
+      bedBugRooms: $('bedBugRooms').value || '1',
+      indoorFleaRooms: $('indoorFleaRooms').value || '1',
+      carpenterBeeQty: $('carpenterBeeQty').value || '1'
+    };
+    existing.pricing = {
+      qtQuote: $('qtQuote').value || '',
+      qtInit: $('qtInit').value || '',
+      smQuote: $('smQuote').value || '',
+      smInstall: $('smInstall').value || ''
+    };
+    existing.dynamicPricing = collectDynamicPricingFields();
+    return existing;
+  }
+
+  function updateFileName(lead){
+    $('fileNameDisplay').textContent = (lead?.customer?.name?.trim() || 'Untitled Lead');
+  }
+
+  function updatePropertiesPanel(lead){
+    $('propertiesBox').innerHTML = `
+      Owner: ${escapeHtml(lead.owner || '—')}<br>
+      Status: ${escapeHtml(lead.status || '—')}<br>
+      Lead Source: ${escapeHtml(lead.customer?.leadSource || '—')}<br>
+      Audited: ${escapeHtml(lead.audit?.audited || 'No')}<br>
+      Created: ${escapeHtml(formatDateTime(lead.createdAt) || '—')}<br>
+      Updated: ${escapeHtml(formatDateTime(lead.updatedAt) || '—')}
+    `;
+  }
+
+  function loadLeadToForm(lead){
+    activeLeadId = lead.id;
+    $('leadOwner').value = lead.owner || getSettings().team[0] || 'CSR 1';
+    $('leadStatus').value = lead.status || 'Pending';
+    $('topDate').value = lead.topDate || '';
+    $('topTime').value = lead.topTime || '';
+    $('custName').value = lead.customer?.name || '';
+    $('custLeadSource').value = lead.customer?.leadSource || '';
+    $('custReferredBy').value = lead.customer?.referredBy || '';
+    $('custPhone').value = lead.customer?.phone || '';
+    $('custEmail').value = lead.customer?.email || '';
+    $('custAddress').value = lead.customer?.address || '';
+    $('custCity').value = lead.customer?.city || '';
+    $('custState').value = lead.customer?.state || 'NC';
+    $('custZip').value = lead.customer?.zip || '';
+    $('custCounty').value = lead.customer?.county || '';
+    $('paymentType').value = lead.customer?.paymentType || '';
+    state.customerType = lead.pricingMode === 'nonCustomer' ? 'nonCustomer' : 'customer';
+    state.servicesSelected = Array.isArray(lead.servicesSelected) && lead.servicesSelected.length ? lead.servicesSelected : ['pestControl'];
+    $('custServices').value = lead.customer?.servicesNeeded || '';
+    $('custNotes').value = lead.customer?.notes || '';
+
+    $('auditToggle').value = lead.audit?.audited || 'No';
+    $('auditNote').value = lead.audit?.note || '';
+
+    $('chkINT').checked = !!lead.checklist?.INT;
+    $('chkPS').checked = !!lead.checklist?.PS;
+    $('chkWD').checked = !!lead.checklist?.WD;
+    $('chkGR').checked = !!lead.checklist?.GR;
+    $('chkLB').checked = !!lead.checklist?.LB;
+    $('chkRS').checked = !!lead.checklist?.RS;
+    $('chkAutopay').checked = !!lead.checklist?.AUTOPAY;
+
+    state.qtOn = lead.services?.qtOn ?? true;
+    state.smOn = lead.services?.smOn ?? false;
+    state.yifOn = lead.services?.yifOn ?? false;
+    state.bundleOn = lead.services?.bundleOn ?? false;
+    state.qtInitTouched = !!(lead.pricing?.qtInit);
+
+    $('sqft').value = lead.measurements?.sqft || '';
+    $('lf').value = lead.measurements?.lf || '';
+    $('sentriconStoryType').value = lead.serviceDetails?.sentriconStoryType || '1';
+    $('sentriconExisting').value = lead.serviceDetails?.sentriconExisting || 'no';
+    state.termiteCalcMode = lead.serviceDetails?.termiteCalcMode === 'chart' ? 'chart' : 'lf';
+    $('bedBugRooms').value = lead.serviceDetails?.bedBugRooms || '1';
+    $('indoorFleaRooms').value = lead.serviceDetails?.indoorFleaRooms || '1';
+    $('carpenterBeeQty').value = lead.serviceDetails?.carpenterBeeQty || '1';
+    $('qtQuote').value = lead.pricing?.qtQuote || '';
+    $('qtInit').value = lead.pricing?.qtInit || '';
+    $('smQuote').value = lead.pricing?.smQuote || '';
+    $('smInstall').value = lead.pricing?.smInstall || '';
+    loadDynamicPricingFields(lead.dynamicPricing);
+
+    updateChecklistChips();
+    updateCustomerTypeUI();
+    updateServiceButtonsUI();
+    updateServicePanelsVisibility();
+    updateServiceMenuUI();
+    updateTermiteCalcModeUI();
+    syncServicesField();
+    updateTogglesUI();
+    updateFileName(lead);
+    updatePropertiesPanel(lead);
+    $('saveStatusBox').innerHTML = `Autosave: saved<br>Updated: ${escapeHtml(formatDateTime(lead.updatedAt) || '—')}<br>Last touched: ${escapeHtml(formatDateTime(getLeadTouchedAt(lead)) || '—')}`;
+    calc();
+    renderFollowupPanel();
+    renderConsole();
+  }
+
+  function markLeadTouched(id){
+    if(!id) return;
+    const lead = getLeadById(id);
+    if(!lead) return;
+    lead.lastTouchedAt = new Date().toISOString();
+    saveLeadObject(lead);
+  }
+
+  function renderFollowupPanel(){
+    const lead = collectLeadFromForm();
+    const count = getFollowupCount(lead);
+    $('followupProgressText').textContent = `${count} / 5 follow-ups logged`;
+    $('followupProgressFill').style.width = `${(count / 5) * 100}%`;
+    $('followupHint').textContent = lead.status === 'Declined'
+      ? 'Lead declined. Follow-up requirement is closed.'
+      : count >= 5
+        ? 'Five follow-ups completed.'
+        : `Needs ${5 - count} more follow-up${5 - count === 1 ? '' : 's'}.`;
+    $('logFollowupBtn').disabled = lead.status === 'Declined' || count >= 5;
+    $('logFollowupBtn').textContent = lead.status === 'Declined' ? 'DECLINED' : count >= 5 ? 'COMPLETE' : 'LOG FOLLOW-UP';
+  }
+
+  function autosave(){
+    const lead = collectLeadFromForm();
+    saveLeadObject(lead);
+    updateFileName(lead);
+    updatePropertiesPanel(lead);
+    $('saveStatusBox').innerHTML = `Autosave: saved<br>Updated: ${escapeHtml(formatDateTime(lead.updatedAt) || '—')}<br>Last touched: ${escapeHtml(formatDateTime(getLeadTouchedAt(lead)) || '—')}`;
+    renderConsole();
+  }
+
+  let saveTimer = null;
+  function scheduleAutosave(){
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(autosave, 220);
+  }
+
+  function createNewLead(){
+    const lead = getBlankLead();
+    lead.owner = (currentUserAuth && currentUserAuth.name) || $('leadOwner').value || getSettings().team[0] || 'CSR 1';
+    saveLeadObject(lead);
+    loadLeadToForm(lead);
+    showFormScreen();
+  }
+
+  function duplicateCurrentLead(){
+    const current = collectLeadFromForm();
+    const copy = JSON.parse(JSON.stringify(current));
+    copy.id = makeLeadId();
+    copy.createdAt = new Date().toISOString();
+    copy.updatedAt = copy.createdAt;
+    copy.customer.name = copy.customer.name ? `${copy.customer.name} Copy` : '';
+    saveLeadObject(copy);
+    loadLeadToForm(copy);
+  }
+
+  function loadLastLead(){
+    const id = localStorage.getItem(LAST_LEAD_KEY);
+    const lead = id ? getLeadById(id) : null;
+    if(lead){
+      loadLeadToForm(lead);
+    }
+  }
+
+  function calc(){
+    const sqft = parseFloat($('sqft').value);
+    const lf = parseFloat($('lf').value);
+
+    const qtSuggested = suggestQt(sqft);
+    const useChart = state.termiteCalcMode === 'chart';
+    const sentriconChart = Number.isFinite(sqft) ? matchSentriconChart($('sentriconStoryType').value, sqft) : null;
+    let smSuggested = Number.isFinite(lf) && lf > 0 ? Math.max(SM_MIN_YEARLY, lf * SM_RATE_PER_LF) : SM_MIN_YEARLY;
+    let smInstallSuggested = ($('sentriconExisting').value || 'no') === 'yes' ? 0 : (Number.isFinite(lf) && lf > 0 ? Math.round(lf) : 0);
+
+    if(useChart && sentriconChart){
+      smSuggested = sentriconChart.monitoring;
+      smInstallSuggested = ($('sentriconExisting').value || 'no') === 'yes' ? 0 : sentriconChart.install;
+    } else {
+      smSuggested = Number.isFinite(lf) && lf > 0 ? Math.max(SM_MIN_YEARLY, lf * SM_RATE_PER_LF) : SM_MIN_YEARLY;
+      smInstallSuggested = ($('sentriconExisting').value || 'no') === 'yes' ? 0 : (Number.isFinite(lf) && lf > 0 ? Math.round(lf) : 0);
+    }
+
+    $('qtSuggestedLabel').textContent = money(qtSuggested);
+    $('smSuggestedLabel').textContent = money(smSuggested);
+    $('smQuote').placeholder = String(Math.round(smSuggested));
+    $('smInstall').placeholder = String(Math.round(smInstallSuggested));
+
+    const qtQuoteIn = parseFloat($('qtQuote').value);
+    const qtBase = Number.isFinite(qtQuoteIn) ? qtQuoteIn : qtSuggested;
+    const smBase = getNumberOrDefault('smQuote', smSuggested);
+
+    const qtInitRaw = ($('qtInit').value || '').trim();
+    let qtInit = parseFloat(qtInitRaw);
+    if(!Number.isFinite(qtInit)) qtInit = qtBase;
+
+    const smInstall = getNumberOrDefault('smInstall', smInstallSuggested);
+
+    const bundleApplies = state.bundleOn && state.qtOn && state.smOn;
+    const qtBundled = bundleApplies ? Math.max(0, qtBase - BUNDLE_DISC) : qtBase;
+    const qtMonthlyPlain = state.qtOn ? ceil(qtBase / 3) : 0;
+    const qtMonthlyBundle = state.qtOn ? ceil(qtBundled / 3) : 0;
+    const smMonthly = state.smOn ? ceil(smBase / 12) : 0;
+
+    let qtYifPlain = 0;
+    let qtYifBundle = 0;
+    if(state.qtOn){
+      const basePlain = (qtBase * 4) + qtInit;
+      const baseBundle = (qtBundled * 4) + qtInit;
+      qtYifPlain = state.yifOn ? basePlain * (1 - YIF_DISCOUNT) : basePlain;
+      qtYifBundle = state.yifOn ? baseBundle * (1 - YIF_DISCOUNT) : baseBundle;
+    }
+
+    let smYif = 0;
+    let smYear1 = 0;
+    if(state.smOn){
+      if(($('sentriconExisting').value || 'no') === 'yes'){
+        smYif = state.yifOn ? Math.max(SM_MIN_YEARLY, smBase) * (1 - YIF_DISCOUNT) : Math.max(SM_MIN_YEARLY, smBase);
+      } else {
+        smYif = smBase + smInstall;
+      }
+      smYear1 = smBase + smInstall;
+    }
+
+    const plainMonthlyTotal = (state.qtOn ? qtMonthlyPlain : 0) + (state.smOn ? smMonthly : 0);
+    const bundleMonthlyTotal = (state.qtOn ? qtMonthlyBundle : 0) + (state.smOn ? smMonthly : 0);
+    const plainYifTotal = qtYifPlain + smYif;
+    const bundleYifTotal = qtYifBundle + smYif;
+    const shownQt = state.qtOn ? (bundleApplies ? qtBundled : qtBase) : 0;
+    const shownQtMo = state.qtOn ? (bundleApplies ? qtMonthlyBundle : qtMonthlyPlain) : 0;
+
+    $('qtRateDisplay').textContent = money(shownQt);
+    $('qtMonthlyDisplay').textContent = money0(shownQtMo);
+    $('smRateDisplay').textContent = money(state.smOn ? smBase : 0);
+    $('smMonthlyDisplay').textContent = money0(smMonthly);
+    $('totalMonthlyDisplay').textContent = `${money0(plainMonthlyTotal)} / mo`;
+    $('totalYifDisplay').textContent = money(plainYifTotal);
+    $('bundleMonthlyDisplay').textContent = `${money0(bundleMonthlyTotal)} / mo`;
+    $('bundleYifDisplay').textContent = money(bundleYifTotal);
+    $('bundleQtRow').textContent = money(state.qtOn ? qtBundled : 0);
+    $('plainMonthlyRow').textContent = `${money0(plainMonthlyTotal)} / mo`;
+    $('bundleMonthlyRow').textContent = `${money0(bundleMonthlyTotal)} / mo`;
+    $('plainYifRow').textContent = money(plainYifTotal);
+    $('bundleYifRow').textContent = money(bundleYifTotal);
+    $('qtMonthlyRead').value = money0(bundleApplies ? qtMonthlyBundle : qtMonthlyPlain);
+    $('qtYifRead').value = money(bundleApplies ? qtYifBundle : qtYifPlain);
+    $('smMonthlyRead').value = money0(smMonthly);
+    $('smYear1Read').value = money(smYear1);
+
+    updateDynamicServiceReadouts();
+    const summaryItems = [];
+    if(state.qtOn) summaryItems.push({ label:'Pest Control', amount:bundleApplies ? qtBundled : qtBase, note:`Monthly ${money0(bundleApplies ? qtMonthlyBundle : qtMonthlyPlain)}` });
+    if(state.smOn) summaryItems.push({ label:'Termite Protection', amount:smBase + smInstall, note:`Monthly ${money0(smMonthly)}` });
+    summaryItems.push(...getDynamicServiceSummary().filter(item => !['Pest Control','Termite Protection'].includes(item.label)));
+    renderServiceSummary(summaryItems);
+  }
+
+  function showConsoleScreen(){
+    currentScreen = 'console';
+    $('formScreen').classList.add('hide');
+    $('consoleScreen').classList.remove('hide');
+    renderConsole();
+  }
+
+  function showFormScreen(){
+    currentScreen = 'form';
+    $('consoleScreen').classList.add('hide');
+    $('formScreen').classList.remove('hide');
+    closeDetailDrawer();
+  }
+
+  function buildFilteredLeads(){
+    const store = getStore();
+    const q = ($('consoleSearch').value || '').trim().toLowerCase();
+    const ownerFilter = $('consoleOwnerFilter').value;
+    const statusFilter = $('consoleStatusFilter').value;
+
+    let leads = [...store.leads];
+
+    if(ownerFilter !== 'All'){
+      leads = leads.filter(l => (l.owner || '') === ownerFilter);
+    }
+
+    if(statusFilter !== 'All'){
+      leads = leads.filter(l => (l.status || '') === statusFilter);
+    }
+
+    if(state.quickFilter === 'today'){
+      leads = leads.filter(isLeadToday);
+    } else if(state.quickFilter === 'myToday'){
+      const selectedOwner = $('consoleOwnerFilter').value;
+      if(selectedOwner === 'All'){
+        leads = [];
+      } else {
+        leads = leads.filter(l => (l.owner || '') === selectedOwner && isLeadToday(l));
+      }
+    } else if(state.quickFilter === 'unworkedToday'){
+      leads = leads.filter(l => isLeadToday(l) && !isLeadWorkedToday(l));
+    }
+
+    if(q){
+      leads = leads.filter(l => {
+        const hay = [
+          l.customer?.name,
+          l.customer?.phone,
+          l.customer?.address,
+          l.customer?.email,
+          l.customer?.servicesNeeded,
+          l.customer?.leadSource,
+          l.customer?.referredBy,
+          l.audit?.note
+        ].join(' ').toLowerCase();
+        return hay.includes(q);
+      });
+    }
+
+    leads.sort((a,b) => new Date(getLeadTouchedAt(b) || 0) - new Date(getLeadTouchedAt(a) || 0));
+    return leads;
+  }
+
+  function openLeadFromDesk(id){
+    const lead = getLeadById(id);
+    if(lead){
+      markLeadTouched(id);
+      loadLeadToForm(getLeadById(id) || lead);
+      showFormScreen();
+    }
+  }
+
+  function renderDeskStats(leads){
+    const el = $('deskStats');
+    if(el) el.innerHTML = '';
+  }
+
+  function renderBoardView(leads){
+    const board = $('consoleBoard');
+    if(!leads.length){
+      board.innerHTML = `<div class="emptyState">No leads match the current filters.</div>`;
+      return;
+    }
+
+    board.innerHTML = STATUS_ORDER.map(status => {
+      const laneLeads = leads.filter(l => (l.status || 'Pending') === status);
+      return `
+        <div class="lane" data-status-lane="${escapeHtml(status)}">
+          <div class="laneHead">
+            <div class="laneTitle">${escapeHtml(status)}</div>
+            <div class="laneCount">${laneLeads.length}</div>
+          </div>
+          <div class="laneBody" data-status-drop="${escapeHtml(status)}">
+            ${laneLeads.length ? laneLeads.map(l => {
+              const serviceBits = [];
+              if(l.services?.qtOn) serviceBits.push('QT');
+              if(l.services?.smOn) serviceBits.push('SM');
+              return `
+                <div class="leadCard" draggable="true" data-drag-lead="${l.id}" data-open-lead="${l.id}">
+                  <div class="leadTop">
+                    <div>
+                      <div class="leadName">${escapeHtml(l.customer?.name || 'Untitled Lead')}</div>
+                      <div class="leadMeta">${escapeHtml(l.customer?.phone || 'No phone')}</div>
+                    </div>
+                    <span class="badge">${escapeHtml(l.owner || '—')}</span>
+                  </div>
+                  <div class="leadMeta">
+                    ${escapeHtml(l.customer?.address || 'No address')}<br>
+                    ${escapeHtml(l.customer?.leadSource || 'No source')}<br>
+                    ${serviceBits.join(' + ') || 'No services selected'}<br>
+                    Follow-Ups: ${getFollowupCount(l)} / 5${needsFollowUp(l) ? ' · Due' : ''}<br>
+                    Last touched: ${escapeHtml(formatDateTime(getLeadTouchedAt(l)) || '—')}
+                  </div>
+                </div>
+              `;
+            }).join('') : `<div class="emptyState">No leads here.</div>`}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    board.querySelectorAll('[data-open-lead]').forEach(el => {
+      el.addEventListener('click', () => openLeadFromDesk(el.getAttribute('data-open-lead')));
+    });
+
+    board.querySelectorAll('[data-drag-lead]').forEach(el => {
+      el.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', el.getAttribute('data-drag-lead'));
+        e.dataTransfer.effectAllowed = 'move';
+        el.classList.add('dropHint');
+      });
+      el.addEventListener('dragend', () => el.classList.remove('dropHint'));
+    });
+
+    board.querySelectorAll('[data-status-drop]').forEach(zone => {
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.classList.add('dragTarget');
+      });
+      zone.addEventListener('dragleave', () => zone.classList.remove('dragTarget'));
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.classList.remove('dragTarget');
+        const leadId = e.dataTransfer.getData('text/plain');
+        const nextStatus = zone.getAttribute('data-status-drop');
+        const lead = getLeadById(leadId);
+        if(lead && nextStatus && lead.status !== nextStatus){
+          lead.status = nextStatus;
+          lead.lastTouchedAt = new Date().toISOString();
+          saveLeadObject(lead);
+          if(activeLeadId === lead.id) loadLeadToForm(lead);
+          renderConsole();
+        }
+      });
+    });
+  }
+
+  function renderChronoView(leads){
+    const list = $('chronoList');
+    if(!leads.length){
+      list.innerHTML = `<div class="emptyState">No leads match the current filters.</div>`;
+      return;
+    }
+
+    const groups = {};
+    leads.forEach(lead => {
+      const touched = getLeadTouchedAt(lead);
+      const key = touched ? new Date(touched).toISOString().slice(0,10) : 'nodate';
+      if(!groups[key]) groups[key] = [];
+      groups[key].push(lead);
+    });
+
+    const sortedKeys = Object.keys(groups).sort((a,b) => {
+      if(a === 'nodate') return 1;
+      if(b === 'nodate') return -1;
+      return b.localeCompare(a);
+    });
+
+    list.innerHTML = sortedKeys.map(key => {
+      const groupLeads = groups[key].slice().sort((a,b) => new Date(getLeadTouchedAt(b) || 0) - new Date(getLeadTouchedAt(a) || 0));
+      const sampleStamp = key === 'nodate' ? '' : `${key}T12:00:00`;
+      return `
+        <div class="chronoGroup">
+          <div class="chronoGroupHead">
+            <div class="chronoGroupTitle">${escapeHtml(getGroupLabel(sampleStamp))}</div>
+            <div class="chronoGroupCount">${groupLeads.length}</div>
+          </div>
+          <div class="chronoGrid">
+            ${groupLeads.map(l => {
+              const serviceBits = [];
+              if(l.services?.qtOn) serviceBits.push('QT');
+              if(l.services?.smOn) serviceBits.push('SM');
+              return `
+                <div class="leadCard" data-open-lead="${l.id}">
+                  <div class="leadTop">
+                    <div>
+                      <div class="leadName">${escapeHtml(l.customer?.name || 'Untitled Lead')}</div>
+                      <div class="leadMeta">${escapeHtml(l.customer?.phone || 'No phone')}</div>
+                    </div>
+                    <span class="badge">${escapeHtml(l.owner || '—')}</span>
+                  </div>
+                  <div class="leadMeta">
+                    ${escapeHtml(l.customer?.address || 'No address')}<br>
+                    ${serviceBits.join(' + ') || 'No services selected'}<br>
+                    Last Touch: ${escapeHtml(formatDateTime(getLeadTouchedAt(l)) || '—')}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>`;
+    }).join('');
+
+    list.querySelectorAll('[data-open-lead]').forEach(el => {
+      el.addEventListener('click', () => openLeadFromDesk(el.getAttribute('data-open-lead')));
+    });
+  }
+
+  function updateDeskButtons(){
+    $('boardViewBtn').classList.toggle('on', state.deskView === 'board');
+    $('chronoViewBtn').classList.toggle('on', state.deskView === 'chrono');
+    $('allLeadsFilterBtn').classList.toggle('on', state.quickFilter === 'all');
+    $('todayFilterBtn').classList.toggle('on', state.quickFilter === 'today');
+    $('myLeadsTodayBtn').classList.toggle('on', state.quickFilter === 'myToday');
+    $('unworkedTodayBtn').classList.toggle('on', state.quickFilter === 'unworkedToday');
+    $('consoleBoard').classList.toggle('hide', state.deskView !== 'board');
+    $('chronoList').classList.toggle('hide', state.deskView !== 'chrono');
+  }
+
+  function renderConsole(){
+    const leads = buildFilteredLeads();
+    updateDeskButtons();
+    renderDeskStats(leads);
+    renderBoardView(leads);
+    renderChronoView(leads);
+  }
+
+
+
+  function setDrawerPane(pane){
+    document.querySelectorAll('[data-pane]').forEach(el => el.classList.toggle('show', el.getAttribute('data-pane') === pane));
+    document.querySelectorAll('[data-pane-tab]').forEach(el => el.classList.toggle('on', el.getAttribute('data-pane-tab') === pane));
+    const titleMap = { properties:'Properties', followups:'Follow-Ups', audit:'Audit' };
+    $('detailDrawerTitle').textContent = titleMap[pane] || 'Lead Details';
+  }
+
+  function openDetailDrawer(pane='properties'){
+    setDrawerPane(pane);
+    $('detailDrawer').classList.add('show');
+    $('drawerOverlay').classList.add('show');
+    $('detailDrawer').setAttribute('aria-hidden','false');
+  }
+
+  function closeDetailDrawer(){
+    $('detailDrawer').classList.remove('show');
+    $('drawerOverlay').classList.remove('show');
+    $('detailDrawer').setAttribute('aria-hidden','true');
+  }
+
+
+  function buildLoginOptions(){
+    const users = backendUsers.filter(u => u.active === 'yes' && u.name);
+    const fallback = getSettings().team.map(name => ({ name }));
+    const options = users.length ? users : fallback;
+    const select = $('loginName');
+    select.innerHTML = '';
+    options.forEach(user => {
+      const opt = document.createElement('option');
+      opt.value = user.name;
+      opt.textContent = user.name;
+      select.appendChild(opt);
+    });
+    if(!select.value && options[0]) select.value = options[0].name;
+  }
+
+  function showLoginScreen(){
+    $('loginScreen').classList.remove('hide');
+    $('loginError').textContent = '';
+    buildLoginOptions();
+  }
+
+  function hideLoginScreen(){
+    $('loginScreen').classList.add('hide');
+  }
+
+  async function attemptLogin(){
+    const name = $('loginName').value;
+    const pin = $('loginPin').value.trim();
+    if(!name || !pin){
+      $('loginError').textContent = 'Enter your name and PIN.';
+      return;
+    }
+    const result = await loginManagerOnServer(name, pin);
+    if(!result || !result.ok){
+      $('loginError').textContent = 'Login failed.';
+      return;
+    }
+    currentUserAuth = { name, pin, role: String(result.role || 'csr').toLowerCase() === 'manager' ? 'manager' : 'csr' };
+    $('openSettingsBtn').classList.toggle('hide', currentUserAuth.role !== 'manager');
+    $('leadOwner').value = name;
+    hideLoginScreen();
+    if(!activeLeadId){
+      createNewLead();
+    } else {
+      const lead = getLeadById(activeLeadId);
+      if(lead) loadLeadToForm(lead);
+    }
+  }
+
+  // events
+  $('loginBtn').addEventListener('click', attemptLogin);
+  $('loginPin').addEventListener('keydown', (e) => { if(e.key === 'Enter') attemptLogin(); });
+  $('logoutBtn').addEventListener('click', () => { currentUserAuth = null; showLoginScreen(); });
+  $('openSettingsBtn').addEventListener('click', openSettingsModal);
+  $('closeSettingsBtn').addEventListener('click', closeSettingsModal);
+  $('cancelSettingsBtn').addEventListener('click', closeSettingsModal);
+  $('saveSettingsBtn').addEventListener('click', saveManagerSettings);
+  $('addSettingsUserBtn').addEventListener('click', () => { settingsUsersDraft.push(normalizeUserRecord({ name:'', pin:'', role:'csr', active:'yes' })); renderSettingsUsers(); });
+  $('menuBtn').addEventListener('click', showConsoleScreen);
+  $('returnToLeadBtn').addEventListener('click', showFormScreen);
+  document.querySelectorAll('[data-open-pane]').forEach(btn => btn.addEventListener('click', () => openDetailDrawer(btn.getAttribute('data-open-pane'))));
+  document.querySelectorAll('[data-pane-tab]').forEach(btn => btn.addEventListener('click', () => setDrawerPane(btn.getAttribute('data-pane-tab'))));
+  $('closeDetailDrawer').addEventListener('click', closeDetailDrawer);
+  $('drawerOverlay').addEventListener('click', closeDetailDrawer);
+
+  $('consoleSearch').addEventListener('input', renderConsole);
+  $('consoleOwnerFilter').addEventListener('change', renderConsole);
+  $('consoleStatusFilter').addEventListener('change', renderConsole);
+
+  $('boardViewBtn').addEventListener('click', () => { state.deskView = 'board'; renderConsole(); });
+  $('chronoViewBtn').addEventListener('click', () => { state.deskView = 'chrono'; renderConsole(); });
+  $('allLeadsFilterBtn').addEventListener('click', () => { state.quickFilter = 'all'; renderConsole(); });
+  $('todayFilterBtn').addEventListener('click', () => { state.quickFilter = 'today'; renderConsole(); });
+  $('myLeadsTodayBtn').addEventListener('click', () => { state.quickFilter = 'myToday'; renderConsole(); });
+  $('unworkedTodayBtn').addEventListener('click', () => { state.quickFilter = 'unworkedToday'; renderConsole(); });
+
+  $('newLeadFromConsoleBtn').addEventListener('click', createNewLead);
+  $('newLeadBtn').addEventListener('click', createNewLead);
+  $('duplicateLeadBtn').addEventListener('click', duplicateCurrentLead);
+
+  $('logFollowupBtn').addEventListener('click', () => {
+    const lead = collectLeadFromForm();
+    const idx = getNextFollowupIndex(lead);
+    if(idx === -1 || lead.status === 'Declined') return;
+    const now = new Date().toISOString();
+    $('fuStamp' + (idx + 1)).dataset.value = now;
+    $('fuStamp' + (idx + 1)).textContent = formatDateTime(now);
+    markLeadTouched(activeLeadId);
+    renderFollowupPanel();
+    scheduleAutosave();
+  });
+
+  $('deleteLeadBtn').addEventListener('click', () => {
+    if(!activeLeadId) return;
+    if(!confirm('Delete this lead?')) return;
+    deleteLead(activeLeadId);
+    const store = getStore();
+    if(store.leads.length){
+      loadLeadToForm(store.leads[0]);
+    } else {
+      createNewLead();
+    }
+  });
+
+  document.querySelectorAll('[data-service]').forEach(btn => btn.addEventListener('click', () => { toggleServiceSelection(btn.getAttribute('data-service')); calc(); scheduleAutosave(); }));
+  $('openServiceMenuBtn').addEventListener('click', () => { state.serviceMenuOpen = !state.serviceMenuOpen; updateServiceMenuUI(); });
+  $('closeServiceMenuBtn').addEventListener('click', () => { state.serviceMenuOpen = false; updateServiceMenuUI(); });
+  $('termiteCalcLfBtn').addEventListener('click', () => { state.termiteCalcMode = 'lf'; updateTermiteCalcModeUI(); calc(); scheduleAutosave(); });
+  $('termiteCalcChartBtn').addEventListener('click', () => { state.termiteCalcMode = 'chart'; updateTermiteCalcModeUI(); calc(); scheduleAutosave(); });
+
+  $('custTypeCustomer').addEventListener('click', () => { state.customerType = 'customer'; updateCustomerTypeUI(); calc(); scheduleAutosave(); });
+  $('custTypeNonCustomer').addEventListener('click', () => { state.customerType = 'nonCustomer'; updateCustomerTypeUI(); calc(); scheduleAutosave(); });
+
+  ['chkINT','chkPS','chkWD','chkGR','chkLB','chkRS','chkAutopay'].forEach(id => {
+    $(id).addEventListener('change', () => {
+      updateChecklistChips();
+      calc();
+      scheduleAutosave();
+    });
+  });
+
+  [['btnQT','qtOn'],['btnSM','smOn'],['btnYIF','yifOn'],['btnBundle','bundleOn']].forEach(([id,key]) => {
+    $(id).addEventListener('click', () => {
+      if(id === 'btnQT'){ toggleServiceSelection('pestControl'); }
+      else if(id === 'btnSM'){ toggleServiceSelection('sentricon'); }
+      else { state[key] = !state[key]; }
+      updateTogglesUI();
+      calc();
+      scheduleAutosave();
+    });
+  });
+
+  $('qtInit').addEventListener('input', () => {
+    state.qtInitTouched = true;
+    calc();
+    scheduleAutosave();
+  });
+
+  [
+    'topDate','topTime','leadOwner','leadStatus',
+    'sqft','lf','qtQuote','smQuote','smInstall','sentriconStoryType','sentriconExisting','bedBugRooms','bedBugFirstPrice','bedBugAddlPrice','germanInitial','germanFollowup','indoorFleaRooms','indoorFleaPrice','carpenterBeeQty','carpenterBeePrice','mosquitoReductionPrice','mosquitoMonthlyPrice','mosquitoFleaTickPrice','snakeAwayPrice','termiteLetterPrice','waspRemovalPrice','yellowJacketPrice','volesPrice',
+    'custName','custLeadSource','custReferredBy','custPhone','custEmail','custAddress',
+    'custCity','custState','custZip','custCounty','custServices','custNotes',
+    'custReferredBy','auditToggle','auditNote','paymentType',
+    'fuNote1','fuNote2','fuNote3','fuNote4','fuNote5'
+  ].forEach(id => {
+    $(id).addEventListener('input', () => { calc(); renderFollowupPanel(); scheduleAutosave(); });
+    $(id).addEventListener('change', () => { calc(); renderFollowupPanel(); scheduleAutosave(); });
+  });
+
+  // init
+  initTiers();
+  refreshOwnerPickers();
+  setNow();
+  updateChecklistChips();
+  updateCustomerTypeUI();
+  updateServiceButtonsUI();
+  updateServicePanelsVisibility();
+  updateServiceMenuUI();
+  updateTermiteCalcModeUI();
+  syncServicesField();
+  updateTogglesUI();
+  $('openSettingsBtn').classList.add('hide');
+  showLoginScreen();
+
+  const store = getStore();
+  if(store.leads.length){
+    const lastId = localStorage.getItem(LAST_LEAD_KEY);
+    const lead = (lastId && getLeadById(lastId)) || store.leads[0];
+    if(lead) loadLeadToForm(lead);
+  }
+
+  renderConsole();
+
+  try {
+    fetchLeadsFromServer().then(remote => {
+      if(remote && Array.isArray(remote.leads)){
+        setStore({ leads: remote.leads });
+        refreshOwnerPickers();
+        buildLoginOptions();
+      }
+    });
+  } catch(e){
+    /* network errors are logged inside fetchLeadsFromServer */
+  }
+})();
+</script>
+</body>
+</html>
