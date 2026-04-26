@@ -1,0 +1,1 @@
+{"name":"kind-lead-console-netlify","version":"1.0.0","private":true,"dependencies":{"@netlify/blobs":"latest"},"devDependencies":{"netlify-cli":"latest"},"scripts":{"dev":"netlify dev","build":"echo Static build complete"}}
